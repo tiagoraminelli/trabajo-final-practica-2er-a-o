@@ -2,7 +2,7 @@
 // Configuración de la base de datos
 $host = 'localhost'; // Cambia esto si tu base de datos está en otro host
 $db = 'practica'; // Nombre de tu base de datos
-$user = 'localhost'; // Tu usuario de base de datos
+$user = 'root'; // Tu usuario de base de datos
 $pass = ''; // Tu contraseña de base de datos
 $charset = 'utf8mb4';
 
@@ -18,7 +18,6 @@ $options = [
 try {
     // Crear la conexión
     $pdo = new PDO($dsn, $user, $pass, $options);
-    echo "Conexión exitosa a la base de datos MariaDB.";
 } catch (PDOException $e) {
     // Manejar el error
     echo "Error de conexión: " . $e->getMessage();

@@ -10,7 +10,7 @@ if (isset($_SESSION['user'])) {
     session_destroy(); // Destruye la sesión
 
     // Redirige al usuario a la página de inicio o login
-    header("Location: login.php");
+    header("Location: index.php");
     exit();
 } else {
     // Si no hay sesión activa, redirige a la página de inicio

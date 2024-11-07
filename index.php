@@ -2,9 +2,15 @@
 session_start(); // Iniciar la sesión
 
 // Verificar si el usuario está logueado
-$isLoggedIn = isset($_SESSION['user']);
-$isLoggedInName = isset($_SESSION['name']);
-$isLoggedInLvl = isset($_SESSION['nivel']);
+// Si el parámetro 'denegado' está presente en la URL, se activa el modal
+if (isset($_GET['denegado']) && $_GET['denegado'] == '1') {
+    echo "<script>
+            window.onload = function() {
+                // Mostrar el modal al cargar la página
+                $('#denegadoModal').modal('show');
+            };
+          </script>";
+}
 //var_dump($_SESSION);
 ?>
 
@@ -14,64 +20,49 @@ $isLoggedInLvl = isset($_SESSION['nivel']);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mi Aplicación</title>
+    <!-- Incluye Bootstrap CSS para el modal -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@1.9.6/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="styles.css"> <!-- Tu hoja de estilos personalizada -->
 </head>
+<style>
+        /* Carrusel */
+        .carousel-inner img {
+            width: 100%;
+            height: 900px;
+            object-fit: cover;
+        }
+
+        /* Tarjetas */
+        .card-img-top {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+    </style>
 <body>
 
-<!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="#">Museo</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav mx-auto">
-                <li class="nav-item">
-                    <a class="nav-link active" href="#">Inicio</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Listado</a>
-                </li>
-                <?php if ($isLoggedIn): ?>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <?php echo htmlspecialchars($_SESSION['user']['nombre']); ?>
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="#">Perfil</a></li>
-                        <li><a class="dropdown-item" href="logout.php">Cerrar sesión</a></li>
-                    </ul>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link active" href="#"><?php echo $_SESSION["nivel"]; ?></a>
-                </li>
-                <?php endif; ?>
-            </ul>
-        </div>
-    </div>
-</nav>
+<?php include("./includes/navbar.php") ?>
 
 <!-- Carrusel -->
 <div id="carouselExample" class="carousel slide" data-bs-ride="carousel">
     <div class="carousel-inner">
         <div class="carousel-item active">
-            <img src="https://via.placeholder.com/800x400?text=Imagen+1" class="d-block w-100" alt="...">
+            <img src="./assets/img/c1.webp" class="d-block w-100" alt="...">
         </div>
         <div class="carousel-item">
-            <img src="https://via.placeholder.com/800x400?text=Imagen+2" class="d-block w-100" alt="...">
+            <img src="./assets/img/c2.webp" class="d-block w-100" alt="...">
         </div>
         <div class="carousel-item">
-            <img src="https://via.placeholder.com/800x400?text=Imagen+3" class="d-block w-100" alt="...">
+            <img src="./assets/img/c3.webp" class="d-block w-100" alt="...">
         </div>
         <div class="carousel-item">
-            <img src="https://via.placeholder.com/800x400?text=Imagen+4" class="d-block w-100" alt="...">
+            <img src="./assets/img/c4.jpg" class="d-block w-100" alt="...">
         </div>
         <div class="carousel-item">
-            <img src="https://via.placeholder.com/800x400?text=Imagen+5" class="d-block w-100" alt="...">
+            <img src="./assets/img/c5.jpg" class="d-block w-100" alt="...">
         </div>
     </div>
     <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
@@ -140,7 +131,7 @@ $isLoggedInLvl = isset($_SESSION['nivel']);
     <div class="w-full h-96">
         <iframe
             class="w-full h-full"
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3151.8354345096235!2d144.95373531561776!3d-37.81627987975189!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6ad642af0f11c355%3A0x5045675218ceed31!2sFederation%20Square!5e0!3m2!1sen!2sau!4v1616362030426!5m2!1sen!2sau"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1722.3024939965837!2d-61.23558934628762!3d-30.305450861353897!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x944a79585c650f09%3A0xac8f5cfe4eb19f9e!2sLiceo%20Municipal%20%C3%81ngela%20Peralta%20Pino!5e0!3m2!1ses!2sar!4v1727321544657!5m2!1ses!2sar"
             width="600"
             height="450"
             style="border:0;"
@@ -167,14 +158,27 @@ $isLoggedInLvl = isset($_SESSION['nivel']);
         </div>
     </div>
 </div>
-
-
+<!-- Modal de acceso denegado -->
+<div class="modal fade" id="denegadoModal" tabindex="-1" aria-labelledby="denegadoModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="denegadoModalLabel">Acceso Denegado</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Has intentado acceder a una página sin autorización. Tu intento ha sido denegado.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 <!-- Pie de Página -->
-<footer class="bg-light text-center py-3 mt-5">
-    <p>&copy; <?php echo date('Y'); ?> Mi Aplicación. Todos los derechos reservados.</p>
-</footer>
+<?php include("./includes/footer.php") ?>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
