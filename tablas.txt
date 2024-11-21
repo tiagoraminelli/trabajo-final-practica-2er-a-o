@@ -6,6 +6,16 @@ Botánica !!
 Zoología !
 Arqueología !!
 Octología !!
+-----------------------------------------
+Editar que funciona:
+Paleontología 
+Osteología 
+Ictiología 
+Geología 
+Botánica 
+Zoología 
+Arqueología - listo
+Octología 
 
 <?php include("./includes/.php") ?>
 COMO SE CARGAN EN LOS CAMPOS

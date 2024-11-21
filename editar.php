@@ -1,5 +1,5 @@
 <?php
-require_once 'bd.php'; // Aquí se incluye el archivo de conexión a la base de datos
+require_once 'bd.php'; // Incluir la conexión a la base de datos
 session_start();
 
 // Verificar si la variable de sesión no está definida o está vacía
@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
             'Osteología' => 'Osteologia',
             'Ictiología' => 'Ictiologia',
             'Geología' => 'Geologia',
-            'Botánica' => 'botanica',
+            'Botánica' => 'Botanica',
             'Zoología' => 'Zoologia',
             'Arqueología' => 'Arqueologia',
             'Octología' => 'Octologia'
@@ -35,17 +35,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         $tablaRelacionada = $clasificacionTablaMap[$clasificacion];
 
         // Consultar los detalles de la pieza
-        $sqlPieza = "SELECT * 
-                     FROM pieza 
-                     WHERE idPieza = ?";
+        $sqlPieza = "SELECT * FROM pieza WHERE idPieza = ?";
         $stmtPieza = $pdo->prepare($sqlPieza);
         $stmtPieza->execute([$idPieza]);
         $pieza = $stmtPieza->fetch(PDO::FETCH_ASSOC);
 
         // Consultar detalles específicos según la clasificación
-        $sqlClasificacion = "SELECT * 
-                             FROM $tablaRelacionada 
-                             WHERE Pieza_idPieza = ?";
+        $sqlClasificacion = "SELECT * FROM $tablaRelacionada WHERE Pieza_idPieza = ?";
         $stmtClasificacion = $pdo->prepare($sqlClasificacion);
         $stmtClasificacion->execute([$idPieza]);
         $clasificacionDetalles = $stmtClasificacion->fetch(PDO::FETCH_ASSOC);
@@ -75,7 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     <h2 class="mb-4">Editar Pieza - <?php echo htmlspecialchars($pieza['num_inventario']); ?></h2>
     
     <!-- Formulario genérico para la pieza -->
-    <form action="guardar_pieza.php" method="POST">
+    <form action="guardar_pieza.php" method="POST" enctype="multipart/form-data">
         <input type="hidden" name="idPieza" value="<?php echo htmlspecialchars($pieza['idPieza']); ?>">
         
         <div class="mb-3">
@@ -109,16 +105,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         </div>
 
         <div class="mb-3">
+            <label for="donante_idDonante" class="form-label">Donante</label>
+            <input type="number" class="form-control" id="donante_idDonante" name="donante_idDonante" value="<?php echo htmlspecialchars($pieza['Donante_idDonante']); ?>" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="clasificacion" class="form-label">Clasificación</label>
+            <input class="form-control" id="clasificacion" name="clasificacion" value="<?php echo htmlspecialchars($pieza['clasificacion']); ?>" readonly>
+        </div>
+
+        <div class="mb-3">
             <label for="imagen" class="form-label">Imagen</label>
             <input type="file" class="form-control" id="imagen" name="imagen" accept="image/*">
         </div>
+        
         <hr>
-   <!-- Formulario específico según la clasificación -->
-   <?php if ($clasificacion == 'Arqueología'): ?>
-        <h3>Detalles de Arqueología</h3>
-    
-            <input type="hidden" name="idPieza" value="<?php echo htmlspecialchars($pieza['idPieza']); ?>">
-            
+
+        <!-- Formulario específico según la clasificación -->
+        <?php if ($clasificacion == 'Arqueología'): ?>
+            <h3>Detalles de Arqueología</h3>
             <div class="mb-3">
                 <label for="integridad_historica" class="form-label">Integridad Histórica</label>
                 <input type="text" class="form-control" id="integridad_historica" name="integridad_historica" value="<?php echo htmlspecialchars($clasificacionDetalles['integridad_historica']); ?>" required>
@@ -134,13 +139,26 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
                 <input type="text" class="form-control" id="material" name="material" value="<?php echo htmlspecialchars($clasificacionDetalles['material']); ?>" required>
             </div>
 
-            <button type="submit" class="btn btn-primary">Guardar cambios</button>
-        
-    <?php elseif ($clasificacion == 'Paleontología'): ?>
-        <!-- Formulario específico para Paleontología (agrega aquí los campos correspondientes) -->
-    <?php endif; ?>
-    </form>
+        <?php elseif ($clasificacion == 'Paleontología'): ?>
+            <h3>Detalles de Paleontología</h3>
+            <div class="mb-3">
+                <label for="era" class="form-label">Era</label>
+                <input type="text" class="form-control" id="era" name="era" value="<?php echo htmlspecialchars($clasificacionDetalles['era']); ?>" required>
+            </div>
 
+            <div class="mb-3">
+                <label for="periodo" class="form-label">Periodo</label>
+                <input type="text" class="form-control" id="periodo" name="periodo" value="<?php echo htmlspecialchars($clasificacionDetalles['periodo']); ?>" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="descripcion" class="form-label">Descripción</label>
+                <textarea class="form-control" id="descripcionPal" name="descripcionPal" rows="3" required><?php echo htmlspecialchars($clasificacionDetalles['descripcion']); ?></textarea>
+            </div>
+        <?php endif; ?>
+
+        <button type="submit" class="btn btn-primary">Guardar cambios</button>
+    </form>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
