@@ -120,42 +120,185 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         </div>
         
         <hr>
+         <!-- Formulario específico según la clasificación -->
+<?php if ($clasificacion == 'Arqueología'): ?>
+    <h3>Detalles de Arqueología</h3>
+    <div class="mb-3">
+        <label for="integridad_historica" class="form-label">Integridad Histórica</label>
+        <input type="text" class="form-control" id="integridad_historica" name="integridad_historica" value="<?php echo htmlspecialchars($clasificacionDetalles['integridad_historica']); ?>" required>
+    </div>
 
-        <!-- Formulario específico según la clasificación -->
-        <?php if ($clasificacion == 'Arqueología'): ?>
-            <h3>Detalles de Arqueología</h3>
-            <div class="mb-3">
-                <label for="integridad_historica" class="form-label">Integridad Histórica</label>
-                <input type="text" class="form-control" id="integridad_historica" name="integridad_historica" value="<?php echo htmlspecialchars($clasificacionDetalles['integridad_historica']); ?>" required>
-            </div>
+    <div class="mb-3">
+        <label for="estetica" class="form-label">Estética</label>
+        <input type="text" class="form-control" id="estetica" name="estetica" value="<?php echo htmlspecialchars($clasificacionDetalles['estetica']); ?>" required>
+    </div>
 
-            <div class="mb-3">
-                <label for="estetica" class="form-label">Estética</label>
-                <input type="text" class="form-control" id="estetica" name="estetica" value="<?php echo htmlspecialchars($clasificacionDetalles['estetica']); ?>" required>
-            </div>
+    <div class="mb-3">
+        <label for="material" class="form-label">Material</label>
+        <input type="text" class="form-control" id="material" name="material" value="<?php echo htmlspecialchars($clasificacionDetalles['material']); ?>" required>
+    </div>
 
-            <div class="mb-3">
-                <label for="material" class="form-label">Material</label>
-                <input type="text" class="form-control" id="material" name="material" value="<?php echo htmlspecialchars($clasificacionDetalles['material']); ?>" required>
-            </div>
+<?php elseif ($clasificacion == 'Paleontología'): ?>
+    <h3>Detalles de Paleontología</h3>
+    <div class="mb-3">
+        <label for="era" class="form-label">Era</label>
+        <input type="text" class="form-control" id="eraPal" name="eraPal" value="<?php echo htmlspecialchars($clasificacionDetalles['era']); ?>" required>
+    </div>
 
-        <?php elseif ($clasificacion == 'Paleontología'): ?>
-            <h3>Detalles de Paleontología</h3>
-            <div class="mb-3">
-                <label for="era" class="form-label">Era</label>
-                <input type="text" class="form-control" id="era" name="era" value="<?php echo htmlspecialchars($clasificacionDetalles['era']); ?>" required>
-            </div>
+    <div class="mb-3">
+        <label for="periodo" class="form-label">Periodo</label>
+        <input type="text" class="form-control" id="periodoPal" name="periodoPal" value="<?php echo htmlspecialchars($clasificacionDetalles['periodo']); ?>" required>
+    </div>
 
-            <div class="mb-3">
-                <label for="periodo" class="form-label">Periodo</label>
-                <input type="text" class="form-control" id="periodo" name="periodo" value="<?php echo htmlspecialchars($clasificacionDetalles['periodo']); ?>" required>
-            </div>
+    <div class="mb-3">
+        <label for="descripcion" class="form-label">Descripción</label>
+        <textarea class="form-control" id="descripcionPal" name="descripcionPal" rows="3" required><?php echo htmlspecialchars($clasificacionDetalles['descripcion']); ?></textarea>
+    </div>
 
-            <div class="mb-3">
-                <label for="descripcion" class="form-label">Descripción</label>
-                <textarea class="form-control" id="descripcionPal" name="descripcionPal" rows="3" required><?php echo htmlspecialchars($clasificacionDetalles['descripcion']); ?></textarea>
-            </div>
-        <?php endif; ?>
+<?php elseif ($clasificacion == 'Osteología'): ?>
+    <h3>Detalles de Osteología</h3>
+    <div class="mb-3">
+        <label for="especie_osteologia" class="form-label">Especie</label>
+        <input type="text" class="form-control" id="especieOst" name="especieOst" value="<?php echo htmlspecialchars($clasificacionDetalles['especie']); ?>" required>
+    </div>
+
+    <div class="mb-3">
+        <label for="clasificacion_osteologia" class="form-label">Clasificación</label>
+        <input type="text" class="form-control" id="clasificacionOst" name="clasificacionOst" value="<?php echo htmlspecialchars($clasificacionDetalles['clasificacion']); ?>" required>
+    </div>
+
+<?php elseif ($clasificacion == 'Ictiología'): ?>
+    <h3>Detalles de Ictiología</h3>
+    <div class="mb-3">
+        <label for="clasificacion_ictiologia" class="form-label">Clasificación</label>
+        <input type="text" class="form-control" id="clasificacion_ictiologia" name="clasificacion_ictiologia" value="<?php echo htmlspecialchars($clasificacionDetalles['clasificacion']); ?>" required>
+    </div>
+
+    <div class="mb-3">
+        <label for="especies_ictiologia" class="form-label">Especies</label>
+        <input type="text" class="form-control" id="especies_ictiologia" name="especies_ictiologia" value="<?php echo htmlspecialchars($clasificacionDetalles['especies']); ?>" required>
+    </div>
+
+    <div class="mb-3">
+        <label for="descripcion_ictiologia" class="form-label">Descripción</label>
+        <textarea class="form-control" id="descripcion_ictiologia" name="descripcion_ictiologia" rows="3" required><?php echo htmlspecialchars($clasificacionDetalles['descripcion']); ?></textarea>
+    </div>
+
+<?php elseif ($clasificacion == 'Geología'): ?>
+    <h3>Detalles de Geología</h3>
+    <div class="mb-3">
+        <label for="tipo_rocas" class="form-label">Tipo de Rocas</label>
+        <input type="text" class="form-control" id="tipo_rocas" name="tipo_rocas" value="<?php echo htmlspecialchars($clasificacionDetalles['tipo_rocas']); ?>" required>
+    </div>
+
+    <div class="mb-3">
+        <label for="descripcion_geologia" class="form-label">Descripción</label>
+        <textarea class="form-control" id="descripcionGeo" name="descripcionGeo" rows="3" required><?php echo htmlspecialchars($clasificacionDetalles['descripcion']); ?></textarea>
+    </div>
+
+<?php elseif ($clasificacion == 'Botánica'): ?>
+    <h3>Detalles de Botánica</h3>
+    <div class="mb-3">
+        <label for="reino" class="form-label">Reino</label>
+        <input type="text" class="form-control" id="reino" name="reinoBot" value="<?php echo htmlspecialchars($clasificacionDetalles['reino']); ?>" required>
+    </div>
+
+    <div class="mb-3">
+        <label for="familia" class="form-label">Familia</label>
+        <input type="text" class="form-control" id="familia" name="familiaBot" value="<?php echo htmlspecialchars($clasificacionDetalles['familia']); ?>" required>
+    </div>
+
+    <div class="mb-3">
+        <label for="especie" class="form-label">Especie</label>
+        <input type="text" class="form-control" id="especie" name="especieBot" value="<?php echo htmlspecialchars($clasificacionDetalles['especie']); ?>" required>
+    </div>
+
+    <div class="mb-3">
+        <label for="orden" class="form-label">Orden</label>
+        <input type="text" class="form-control" id="orden" name="ordenBot" value="<?php echo htmlspecialchars($clasificacionDetalles['orden']); ?>" required>
+    </div>
+
+    <div class="mb-3">
+        <label for="division" class="form-label">División</label>
+        <input type="text" class="form-control" id="division" name="divisionBot" value="<?php echo htmlspecialchars($clasificacionDetalles['division']); ?>" required>
+    </div>
+
+    <div class="mb-3">
+        <label for="clase" class="form-label">Clase</label>
+        <input type="text" class="form-control" id="claseBot" name="claseBot" value="<?php echo htmlspecialchars($clasificacionDetalles['clase']); ?>" required>
+    </div>
+
+    <div class="mb-3">
+        <label for="descripcion" class="form-label">Descripción</label>
+        <textarea class="form-control" id="descripcion" name="descripcionBot" rows="3" required><?php echo htmlspecialchars($clasificacionDetalles['descripcion']); ?></textarea>
+    </div>
+
+    <?php elseif ($clasificacion == 'Zoología'): ?>
+    <h3>Detalles de Zoología</h3>
+    <div class="mb-3">
+        <label for="reino" class="form-label">Reino</label>
+        <input type="text" class="form-control" id="reinoZoo" name="reinoZoo" value="<?php echo htmlspecialchars($clasificacionDetalles['reino']); ?>" required>
+    </div>
+
+    <div class="mb-3">
+        <label for="familia" class="form-label">Familia</label>
+        <input type="text" class="form-control" id="familiaZoo" name="familiaZoo" value="<?php echo htmlspecialchars($clasificacionDetalles['familia']); ?>" required>
+    </div>
+
+    <div class="mb-3">
+        <label for="especie" class="form-label">Especie</label>
+        <input type="text" class="form-control" id="especieZoo" name="especieZoo" value="<?php echo htmlspecialchars($clasificacionDetalles['especie']); ?>" required>
+    </div>
+
+    <div class="mb-3">
+        <label for="orden" class="form-label">Orden</label>
+        <input type="text" class="form-control" id="ordenZoo" name="ordenZoo" value="<?php echo htmlspecialchars($clasificacionDetalles['orden']); ?>" required>
+    </div>
+
+    <div class="mb-3">
+        <label for="phylum" class="form-label">Phylum</label>
+        <input type="text" class="form-control" id="phylumZoo" name="phylumZoo" value="<?php echo htmlspecialchars($clasificacionDetalles['phylum']); ?>" required>
+    </div>
+
+    <div class="mb-3">
+        <label for="clase" class="form-label">Clase</label>
+        <input type="text" class="form-control" id="claseZoo" name="claseZoo" value="<?php echo htmlspecialchars($clasificacionDetalles['clase']); ?>" required>
+    </div>
+
+    <div class="mb-3">
+        <label for="genero" class="form-label">Género</label>
+        <input type="text" class="form-control" id="generoZoo" name="generoZoo" value="<?php echo htmlspecialchars($clasificacionDetalles['genero']); ?>" required>
+    </div>
+
+    <div class="mb-3">
+        <label for="descripcion" class="form-label">Descripción</label>
+        <textarea class="form-control" id="descripcionZoo" name="descripcionZoo" rows="3" required><?php echo htmlspecialchars($clasificacionDetalles['descripcion']); ?></textarea>
+    </div>
+<?php elseif ($clasificacion == 'Octología'): ?>
+    <h3>Detalles de Octología</h3>
+    <div class="mb-3">
+        <label for="clasificacion_octologia" class="form-label">Clasificación</label>
+        <input type="text" class="form-control" id="clasificacion_octologia" name="clasificacion_octologia" value="<?php echo htmlspecialchars($clasificacionDetalles['clasificacion']); ?>" required>
+    </div>
+
+    <div class="mb-3">
+        <label for="tipo_octologia" class="form-label">Tipo</label>
+        <input type="text" class="form-control" id="tipo_octologia" name="tipo_octologia" value="<?php echo htmlspecialchars($clasificacionDetalles['tipo']); ?>" required>
+    </div>
+
+    <div class="mb-3">
+        <label for="especie_octologia" class="form-label">Especie</label>
+        <input type="text" class="form-control" id="especie_octologia" name="especie_octologia" value="<?php echo htmlspecialchars($clasificacionDetalles['especie']); ?>" required>
+    </div>
+
+    <div class="mb-3">
+        <label for="descripcion_octologia" class="form-label">Descripción</label>
+        <textarea class="form-control" id="descripcion_octologia" name="descripcion_octologia" rows="3" required><?php echo htmlspecialchars($clasificacionDetalles['descripcion']); ?></textarea>
+    </div>
+
+<?php endif; ?>
+
+     
 
         <button type="submit" class="btn btn-primary">Guardar cambios</button>
     </form>

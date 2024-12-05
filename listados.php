@@ -40,6 +40,9 @@ $rows = $stmt->fetchAll();
         .dataTables_wrapper {
             padding: 20px;
         }
+        .btn-add {
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
@@ -48,6 +51,11 @@ $rows = $stmt->fetchAll();
 
 <div class="container mt-5">
     <h2 class="text-center mb-4">Listado de Piezas</h2>
+
+    <!-- Botón para agregar una nueva pieza -->
+    <div class="d-flex justify-content-between mb-4">
+        <a href="cargarPieza.php" class="btn btn-success btn-add">Agregar Nueva Pieza</a>
+    </div>
 
     <!-- Tabla con DataTables -->
     <div class="table-responsive">
@@ -79,7 +87,7 @@ $rows = $stmt->fetchAll();
                     <td>
                         <a href="ver.php?id=<?php echo $row['idPieza']; ?>&clasificacion=<?php echo $row['clasificacion']; ?>" class="btn btn-info btn-sm">Ver</a>
                         <a href="editar.php?id=<?php echo $row['idPieza']; ?>&clasificacion=<?php echo $row['clasificacion']; ?>" class="btn btn-warning btn-sm">Editar</a>
-                        <a href="eliminar.php?id=<?php echo $row['idPieza']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de eliminar esta pieza?');">Eliminar</a>
+                        <a href="eliminar.php?id=<?php echo $row['idPieza']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de eliminar esta entrada?');">Eliminar</a>
                     </td>
                 </tr>
                 <?php endforeach; ?>
@@ -87,6 +95,93 @@ $rows = $stmt->fetchAll();
         </table>
     </div>
 </div>
+
+<!-- modales -->
+<!-- Modal -->
+<div class="modal fade" id="modalPiezaNoEncontrada" tabindex="-1" role="dialog" aria-labelledby="modalPiezaNoEncontradaLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalPiezaNoEncontradaLabel">Pieza no encontrada</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-center">
+                <img src="./assets/img/404.webp" alt="Pieza no encontrada" class="img-fluid" style="max-width: 400px; height: auto;">
+                <p class="mt-3">Lo sentimos, no hemos podido encontrar la pieza solicitada. Por favor, verifique los detalles o intente nuevamente más tarde.</p>
+            </div>
+            <div class="modal-footer">
+            <p class="mt-3">Haz click para cerrar.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modalInsercionExitosa" tabindex="-1" role="dialog" aria-labelledby="modalInsercionExitosaLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalInsercionExitosaLabel">Inserción exitosa</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-center">
+                <img src="./assets/img/succes.webp" alt="Inserción exitosa" class="img-fluid" style="max-width: 400px; height: auto;border-radius: 20px;">
+                <p class="mt-3">La pieza se ha insertado correctamente. Puede continuar con el siguiente proceso.</p>
+            </div>
+            <div class="modal-footer">
+            <p class="mt-3">Haz click en cualquier lugar para cerrar.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modalEliminacionExitosa" tabindex="-1" role="dialog" aria-labelledby="modalEliminacionExitosaLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalEliminacionExitosaLabel">Eliminación exitosa</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-center">
+                <img src="./assets/img/delete.webp" alt="Eliminación exitosa" class="img-fluid" style="max-width: 400px; height: auto;border-radius: 20px;">
+                <p class="mt-3">La pieza ha sido eliminada exitosamente.</p>
+            </div>
+            <div class="modal-footer">
+                <p class="mt-3">Haz click en cualquier lugar para cerrar.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modalEliminacionNoExitosa" tabindex="-1" role="dialog" aria-labelledby="modalEliminacionNoExitosaLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalEliminacionNoExitosaLabel">Eliminación exitosa</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-center">
+                <img src="./assets/img/404.webp" alt="Eliminación no exitosa" class="img-fluid" style="max-width: 400px; height: auto;border-radius: 20px;">
+                <p class="mt-3">La pieza no ha sido eliminada exitosamente, por favor intente nuevamente.</p>
+            </div>
+            <div class="modal-footer">
+                <p class="mt-3">Haz click en cualquier lugar para cerrar.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 
 <?php include("./includes/footer.php"); ?>
 
@@ -115,6 +210,39 @@ $rows = $stmt->fetchAll();
         });
     });
 </script>
-
+<script>
+    $(document).ready(function() {
+    // Verificar si la variable "encontrado" es 0 en la URL
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('encontrado') == '0') {
+        // Mostrar el modal cuando la pieza no se encuentra
+        $('#modalPiezaNoEncontrada').modal('show');
+    }
+});
+</script>
+<script>
+    $(document).ready(function() {
+    // Verificar si la variable "insertado" es 1 en la URL
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('insertado') == '1') {
+        // Mostrar el modal cuando la inserción fue exitosa
+        $('#modalInsercionExitosa').modal('show');
+    }
+});
+</script>
+<script>
+    $(document).ready(function() {
+    // Verificar si la variable "eliminado" es 1 en la URL
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('eliminado') == '1') {
+        // Mostrar el modal cuando la eliminación fue exitosa
+        $('#modalEliminacionExitosa').modal('show');
+    }else if(urlParams.get('eliminado') == '0'){
+        // Mostrar el modal cuando la eliminación no fue exitosa    
+        $('#modalEliminacionNoExitosa').modal('show');
+        
+    }
+});
+</script>
 </body>
 </html>

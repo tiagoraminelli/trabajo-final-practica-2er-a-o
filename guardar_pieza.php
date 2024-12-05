@@ -1,160 +1,193 @@
 <?php
-var_dump($_POST);
+require_once 'bd.php'; // Incluir la conexión a la base de datos
+session_start();
 
-// Verificar si se ha recibido la información del formulario
-if (isset($_POST['idPieza'])) {
-    // Recibir los valores del formulario
-    $idPieza = $_POST['idPieza'];
-    $num_inventario = $_POST['num_inventario']; 
-    $especie = $_POST['especie'];
-    $estado_conservacion = $_POST['estado_conservacion'];
-    $fecha_ingreso = $_POST['fecha_ingreso'];
-    $cantidad_de_piezas = $_POST['cantidad_de_piezas'];
-    $clasificacion = $_POST['clasificacion'];
-    $Donante_idDonante = $_POST['donante_idDonante']; // Corregir nombre del campo si es necesario
-    $observacion = $_POST['observacion'];
-    if($_POST['imagen']){
-        $imagen = $_POST['imagen'];
-    }
-
-
-    // Establecer conexión con la base de datos
-    $conexion = new mysqli("localhost", "root", "", "practica");
-    
-    // Verificar si la conexión fue exitosa
-    if ($conexion->connect_error) {
-        die("Error de conexión: " . $conexion->connect_error);
-    }
-
-    // Preparar la consulta SQL para actualizar los datos
-    $sql = "UPDATE pieza 
-            SET num_inventario = ?, especie = ?, estado_conservacion = ?, fecha_ingreso = ?, 
-                cantidad_de_piezas = ?, clasificacion = ?, observacion = ?, imagen = ?, Donante_idDonante = ? 
-            WHERE idPieza = ?";
-
-    // Preparar la declaración
-    $stmt = $conexion->prepare($sql);
-
-    // Verificar si la declaración se preparó correctamente
-    if ($stmt === false) {
-        die("Error en la preparación de la consulta: " . $conexion->error);
-    }
-
-    // Asignar los tipos de datos correspondientes: "s" para string, "i" para entero
-    $stmt->bind_param(
-        "sssssssssi", // Tipos de datos: 9 parámetros string (s) y 1 parámetro entero (i)
-        $num_inventario, $especie, $estado_conservacion, $fecha_ingreso, 
-        $cantidad_de_piezas, $clasificacion, $observacion, $imagen, $Donante_idDonante, $idPieza
-    );
-
-    // Ejecutar la consulta
-    if ($stmt->execute()) {
-        echo "Se actualizó correctamente de la pieza";
-    } else {
-        echo "No se actualizó: " . $stmt->error;
-    }
-
-  // Verificar la clasificación de la pieza y actualizar la base de datos
-switch ($clasificacion) {
-    case "Arqueología":
-        // Si la clasificación es Arqueología, actualizar los detalles
-        $integridad_historica = $_POST['integridad_historica'];
-        $estetica = $_POST['estetica'];
-        $material = $_POST['material'];
-        
-        // Consulta SQL para actualizar la tabla arqueologia
-        $sql = "UPDATE arqueologia 
-                SET integridad_historica = ?, estetica = ?, material = ? 
-                WHERE Pieza_idPieza = ?";
-        
-        // Preparar la declaración
-        $stmt = $conexion->prepare($sql);
-        $stmt->bind_param("sssi", $integridad_historica, $estetica, $material, $idPieza);
-        
-        // Ejecutar la consulta
-        if ($stmt->execute()) {
-            echo "Se actualizó correctamente la pieza de arqueología.";
-        } else {
-            echo "No se actualizó la pieza de arqueología: " . $stmt->error;
-        }
-        $stmt->close();
-        break;
-    
-    case "Paleontología":
-        // Si la clasificación es Paleontología, actualizar los detalles
-        $era = $_POST['era'];
-        $periodo = $_POST['periodo'];
-        $descripcion = $_POST['descripcionPal']; // Asegúrate de que este campo está en el formulario
-
-        // Consulta SQL para actualizar la tabla paleontologia
-        $sql = "UPDATE paleontologia 
-                SET era = ?, periodo = ?, descripcion = ? 
-                WHERE Pieza_idPieza = ?";
-
-        // Preparar la declaración
-        $stmt = $conexion->prepare($sql);
-        $stmt->bind_param("sssi", $era, $periodo, $descripcion, $idPieza);
-
-        // Ejecutar la consulta
-        if ($stmt->execute()) {
-            echo "Se actualizó correctamente la pieza de paleontología.";
-        } else {
-            echo "No se actualizó la pieza de paleontología: " . $stmt->error;
-        }
-        $stmt->close();
-        break;
-
-    case "Osteología":
-        // Si la clasificación es Osteología, actualizar los detalles
-        $alimento = $_POST['alimento'];
-        $habitat = $_POST['habitat'];
-        $caracteristicas = $_POST['caracteristicas'];
-
-        // Consulta SQL para actualizar la tabla osteologia
-        $sql = "UPDATE osteologia 
-                SET alimento = ?, habitat = ?, caracteristicas = ? 
-                WHERE Pieza_idPieza = ?";
-
-        // Preparar la declaración
-        $stmt = $conexion->prepare($sql);
-        $stmt->bind_param("sssi", $alimento, $habitat, $caracteristicas, $idPieza);
-
-        // Ejecutar la consulta
-        if ($stmt->execute()) {
-            echo "Se actualizó correctamente la pieza de osteología.";
-        } else {
-            echo "No se actualizó la pieza de osteología: " . $stmt->error;
-        }
-        $stmt->close();
-        break;
-
-    // Otros casos según las clasificaciones que tengas
-    case "Ictiología":
-        // Actualización para Ictiología
-        // Aquí va el código específico para Ictiología
-        break;
-
-    case "Geología":
-        // Actualización para Geología
-        // Aquí va el código específico para Geología
-        break;
-
-    // Si no se reconoce la clasificación
-    default:
-        echo "Clasificación no válida o no manejada.";
-        break;
+// Verificar si el usuario está autenticado
+if (!isset($_SESSION['user'])) {
+    // Redirigir al index si no está autenticado
+    header("Location: index.php?denegado=1");
+    exit;
 }
 
+// Verificar si se ha enviado el formulario
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // Obtener los datos enviados por el formulario
+    $idPieza = isset($_POST['idPieza']) ? intval($_POST['idPieza']) : 0;
+    $num_inventario = isset($_POST['num_inventario']) ? $_POST['num_inventario'] : '';
+    $especie = isset($_POST['especie']) ? $_POST['especie'] : '';
+    $estado_conservacion = isset($_POST['estado_conservacion']) ? $_POST['estado_conservacion'] : '';
+    $fecha_ingreso = isset($_POST['fecha_ingreso']) ? $_POST['fecha_ingreso'] : '';
+    $cantidad_de_piezas = isset($_POST['cantidad_de_piezas']) ? $_POST['cantidad_de_piezas'] : '';
+    $observacion = isset($_POST['observacion']) ? $_POST['observacion'] : '';
+    $donante_idDonante = isset($_POST['donante_idDonante']) ? $_POST['donante_idDonante'] : 0;
+    $clasificacion = isset($_POST['clasificacion']) ? $_POST['clasificacion'] : '';
+    $imagen = isset($_FILES['imagen']) ? $_FILES['imagen'] : null;
 
+    // Verificar si la imagen fue cargada
+    if ($imagen && $imagen['error'] == UPLOAD_ERR_OK) {
+        // Generar un nombre único para la imagen
+        $imagenNombre = time() . "_" . basename($imagen['name']);
+        $destinoImagen = "uploads/" . $imagenNombre;
 
+        // Mover la imagen al directorio de destino
+        move_uploaded_file($imagen['tmp_name'], $destinoImagen);
+    } else {
+        // Si no se cargó una nueva imagen, mantener la imagen anterior
+        $imagenNombre = isset($_POST['imagen_actual']) ? $_POST['imagen_actual'] : '';
+    }
 
-    // Cerrar la declaración y la conexión
-    //die;
-    $stmt->close();
-    $conexion->close();
+    // Actualizar los datos de la pieza
+    $sqlPieza = "UPDATE pieza SET 
+                    num_inventario = ?, 
+                    especie = ?, 
+                    estado_conservacion = ?, 
+                    fecha_ingreso = ?, 
+                    cantidad_de_piezas = ?, 
+                    observacion = ?, 
+                    Donante_idDonante = ?, 
+                    imagen = ? 
+                 WHERE idPieza = ?";
+    $stmtPieza = $pdo->prepare($sqlPieza);
+    $stmtPieza->execute([$num_inventario, $especie, $estado_conservacion, $fecha_ingreso, $cantidad_de_piezas, $observacion, $donante_idDonante, $imagenNombre, $idPieza]);
 
-    // Redirigir a la página de listado después de la actualización
-    header("Location: listados.php");
-    exit();
+    // Actualizar los detalles de la clasificación (según la clasificación seleccionada)
+    $tablaRelacionada = '';
+    $sqlClasificacion = '';
+
+    switch ($clasificacion) {
+        case 'Paleontología':
+            $tablaRelacionada = 'Paleontologia';
+            $era = isset($_POST['eraPal']) ? $_POST['eraPal'] : '';
+            $periodo = isset($_POST['periodoPal']) ? $_POST['periodoPal'] : '';
+            $descripcion = isset($_POST['descripcionPal']) ? $_POST['descripcionPal'] : '';
+            $sqlClasificacion = "UPDATE Paleontologia SET 
+                                    era = ?, 
+                                    periodo = ?, 
+                                    descripcion = ? 
+                                 WHERE Pieza_idPieza = ?";
+            $stmtClasificacion = $pdo->prepare($sqlClasificacion);
+            $stmtClasificacion->execute([$era, $periodo, $descripcion, $idPieza]);
+            break;
+
+        case 'Osteología':
+            $tablaRelacionada = 'Osteologia';
+            $especie_osteologia = isset($_POST['especieOst']) ? $_POST['especieOst'] : '';
+            $clasificacion_osteologia = isset($_POST['clasificacionOst']) ? $_POST['clasificacionOst'] : '';
+            
+            // Actualizar los detalles de la clasificación en la base de datos
+            $sqlClasificacion = "UPDATE Osteologia SET 
+                                    especie = ?, 
+                                    clasificacion = ? 
+                                 WHERE Pieza_idPieza = ?";
+            $stmtClasificacion = $pdo->prepare($sqlClasificacion);
+            $stmtClasificacion->execute([$especie_osteologia, $clasificacion_osteologia, $idPieza]);
+            break;
+
+        case 'Arqueología':
+            $tablaRelacionada = 'Arqueologia';
+            $integridad_historica = isset($_POST['integridad_historica']) ? $_POST['integridad_historica'] : '';
+            $estetica = isset($_POST['estetica']) ? $_POST['estetica'] : '';
+            $material = isset($_POST['material']) ? $_POST['material'] : '';
+            $sqlClasificacion = "UPDATE Arqueologia SET 
+                                    integridad_historica = ?, 
+                                    estetica = ?, 
+                                    material = ? 
+                                 WHERE Pieza_idPieza = ?";
+            $stmtClasificacion = $pdo->prepare($sqlClasificacion);
+            $stmtClasificacion->execute([$integridad_historica, $estetica, $material, $idPieza]);
+            break;
+
+        case 'Ictiología':
+            $tablaRelacionada = 'Ictiologia';
+            $clasificacion_ictiologia = isset($_POST['clasificacion_ictiologia']) ? $_POST['clasificacion_ictiologia'] : '';
+            $especies = isset($_POST['especies_ictiologia']) ? $_POST['especies_ictiologia'] : '';
+            $descripcion_ictiologia = isset($_POST['descripcion_ictiologia']) ? $_POST['descripcion_ictiologia'] : '';
+            $sqlClasificacion = "UPDATE Ictiologia SET 
+                                    clasificacion = ?, 
+                                    especies = ?, 
+                                    descripcion = ? 
+                                 WHERE Pieza_idPieza = ?";
+            $stmtClasificacion = $pdo->prepare($sqlClasificacion);
+            $stmtClasificacion->execute([$clasificacion_ictiologia, $especies, $descripcion_ictiologia, $idPieza]);
+            break;
+
+        case 'Geología':
+            $tablaRelacionada = 'Geologia';
+            $tipo_rocas = isset($_POST['tipo_rocas']) ? $_POST['tipo_rocas'] : '';
+            $descripcion_geologia = isset($_POST['descripcionGeo']) ? $_POST['descripcionGeo'] : '';
+            $sqlClasificacion = "UPDATE Geologia SET 
+                                    tipo_rocas = ?, 
+                                    descripcion = ? 
+                                 WHERE Pieza_idPieza = ?";
+            $stmtClasificacion = $pdo->prepare($sqlClasificacion);
+            $stmtClasificacion->execute([$tipo_rocas, $descripcion_geologia, $idPieza]);
+            break;
+
+        case 'Botánica':
+            $tablaRelacionada = 'Botanica';
+            $reino = isset($_POST['reinoBot']) ? $_POST['reinoBot'] : '';
+            $familia = isset($_POST['familiaBot']) ? $_POST['familiaBot'] : '';
+            $orden = isset($_POST['ordenBot']) ? $_POST['ordenBot'] : '';
+            $especie_botanica = isset($_POST['especieBot']) ? $_POST['especieBot'] : '';
+            $division = isset($_POST['divisionBot']) ? $_POST['divisionBot'] : '';
+            $clase = isset($_POST['claseBot']) ? $_POST['claseBot'] : '';
+            $descripcion_botanica = isset($_POST['descripcionBot']) ? $_POST['descripcionBot'] : '';
+            $sqlClasificacion = "UPDATE Botanica SET 
+                                    reino = ?, 
+                                    familia = ?, 
+                                    orden = ?, 
+                                    especie = ?, 
+                                    division = ?, 
+                                    clase = ?, 
+                                    descripcion = ? 
+                                 WHERE Pieza_idPieza = ?";
+            $stmtClasificacion = $pdo->prepare($sqlClasificacion);
+            $stmtClasificacion->execute([$reino, $familia, $orden, $especie_botanica, $division, $clase, $descripcion_botanica, $idPieza]);
+            break;
+
+        case 'Zoología':
+            $tablaRelacionada = 'Zoologia';
+            $reino_zoologia = isset($_POST['reinoZoo']) ? $_POST['reinoZoo'] : '';
+            $familia_zoologia = isset($_POST['familiaZoo']) ? $_POST['familiaZoo'] : '';
+            $especie_zoologia = isset($_POST['especieZoo']) ? $_POST['especieZoo'] : '';
+            $orden_zoologia = isset($_POST['ordenZoo']) ? $_POST['ordenZoo'] : '';
+            $phylum_zoologia = isset($_POST['phylumZoo']) ? $_POST['phylumZoo'] : '';
+            $clase_zoologia = isset($_POST['claseZoo']) ? $_POST['claseZoo'] : '';
+            $genero_zoologia = isset($_POST['generoZoo']) ? $_POST['generoZoo'] : '';
+            $descripcion_zoologia = isset($_POST['descripcionZoo']) ? $_POST['descripcionZoo'] : '';
+            $sqlClasificacion = "UPDATE Zoologia SET 
+                                    reino = ?, 
+                                    familia = ?, 
+                                    especie = ?, 
+                                    orden = ?, 
+                                    phylum = ?, 
+                                    clase = ?, 
+                                    genero = ?, 
+                                    descripcion = ? 
+                                 WHERE Pieza_idPieza = ?";
+            $stmtClasificacion = $pdo->prepare($sqlClasificacion);
+            $stmtClasificacion->execute([$reino_zoologia, $familia_zoologia, $especie_zoologia, $orden_zoologia, $phylum_zoologia, $clase_zoologia, $genero_zoologia, $descripcion_zoologia, $idPieza]);
+            break;
+
+        case 'Octología':
+            $tablaRelacionada = 'Octologia';
+            $clasificacion_octologia = isset($_POST['clasificacion_octologia']) ? $_POST['clasificacion_octologia'] : '';
+            $tipo_octologia = isset($_POST['tipo_octologia']) ? $_POST['tipo_octologia'] : '';
+            $especie_octologia = isset($_POST['especie_octologia']) ? $_POST['especie_octologia'] : '';
+            $descripcion_octologia = isset($_POST['descripcion_octologia']) ? $_POST['descripcion_octologia'] : '';
+            $sqlClasificacion = "UPDATE Octologia SET 
+                                    clasificacion = ?, 
+                                    tipo = ?, 
+                                    especie = ?, 
+                                    descripcion = ? 
+                                 WHERE Pieza_idPieza = ?";
+            $stmtClasificacion = $pdo->prepare($sqlClasificacion);
+            $stmtClasificacion->execute([$clasificacion_octologia, $tipo_octologia, $especie_octologia, $descripcion_octologia, $idPieza]);
+            break;
+        default:
+        echo "Clasificación no reconocida.";
+        break;
+    }
+    header("Location: listados.php?exito=$idPieza");
 }
 ?>

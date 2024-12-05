@@ -28,10 +28,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->execute([$email]);
     $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
     var_dump($usuario);
-
+    if(password_verify($clave, $usuario['clave'])){
+        echo "usuario entro con exito";
+        $_SESSION['user'] = $usuario;
+        $_SESSION['id'] = $usuario['idUsuario'];
+        $_SESSION['name'] = $usuario['nombre'];
+        $_SESSION['nivel'] = $usuario['tipo_de_usuario'];
+        header("Location: index.php?bienvenido=1"); // Redirige a la página principal
+        exit();
+    }
     if ($usuario and ($clave == $usuario['clave'])){
         echo "usuario entro con exito";
         $_SESSION['user'] = $usuario;
+        $_SESSION['id'] = $usuario['idUsuario'];
         $_SESSION['name'] = $usuario['nombre'];
         $_SESSION['nivel'] = $usuario['tipo_de_usuario'];
         header("Location: index.php?bienvenido=1"); // Redirige a la página principal

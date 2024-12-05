@@ -7,15 +7,59 @@ Zoología !
 Arqueología !!
 Octología !!
 -----------------------------------------
-Editar que funciona:
-Paleontología 
-Osteología 
-Ictiología 
-Geología 
-Botánica 
-Zoología 
+inputs que funciona:
+Paleontología - listo
+Osteología - listo
+Ictiología - listo
+Geología  listo
+Botánica  listo
+Zoología - listo
 Arqueología - listo
-Octología 
+Octología - listo
+
+ilistados que funciona:
+Paleontología - listo
+Osteología - listo
+Ictiología - listo
+Geología  listo
+Botánica  listo
+Zoología - listo
+Arqueología - listo
+Octología - listo
+
+<a href="editar.php?id=<?php echo $row['Pieza_idPieza']; ?>&clasificacion=" class="btn btn-warning btn-sm">Editar</a>
+
+editar que funciona:
+Paleontología - listo
+Osteología - listo
+Ictiología - listo
+Geología  listo
+Botánica  listo
+Zoología - listo
+Arqueología - listo
+Octología - listo
+
+cargar que funciona:
+Paleontología - listo
+Osteología - listo
+Ictiología - listo
+Geología  listo
+Botánica  listo
+Zoología - listo
+Arqueología - listo
+Octología - listo
+
+<a href="eliminar.php?id=<?php echo $row['Pieza_idPieza']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de eliminar esta entrada?');">Eliminar</a>
+
+Eliminar que funciona:
+Paleontología - listo/
+Osteología - listo/
+Ictiología - listo/
+Geología  listo/
+Botánica  listo/
+Zoología - listo/
+Arqueología - listo/
+Octología - listo/
 
 <?php include("./includes/.php") ?>
 COMO SE CARGAN EN LOS CAMPOS

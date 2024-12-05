@@ -47,6 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         // Si no hay resultados
         if (empty($resultados)) {
             echo "No se encontraron resultados para la pieza con ID: $idPieza";
+            header("Location: listados.php?encontrado=0");
             exit;
         }
 
