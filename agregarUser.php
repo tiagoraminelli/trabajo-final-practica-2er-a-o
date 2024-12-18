@@ -9,7 +9,7 @@ if (!isset($_SESSION['user'])) {
 }
 
 // Verificar si el usuario es administrador (nivel 1)
-if ($_SESSION['nivel'] != 1) {
+if ($_SESSION['nivel'] != "administrador") {
     header("Location: index.php?denegado=1");
     exit;
 }
@@ -38,15 +38,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (count($errores) == 0) {
         // Encriptar la clave
         $clave_encriptada = password_hash($clave, PASSWORD_DEFAULT);
+        $conn = 
 
         // Insertar el nuevo usuario en la base de datos
-        $sql = "INSERT INTO usuario (dni, nombre, apellido, email, clave, tipo_de_usuario) 
-                VALUES ('$dni', '$nombre', '$apellido', '$email', '$clave_encriptada', '$tipo_de_usuario')";
+        $sql = "INSERT INTO usuario (dni, nombre, apellido, email, clave, tipo_de_usuario,fecha_alta) 
+                VALUES ('$dni', '$nombre', '$apellido', '$email', '$clave_encriptada', '$tipo_de_usuario',NOW())";
 
-        if ($conn->query($sql) === TRUE) {
+        if ($pdo->query($sql) == TRUE) {
             echo "Nuevo usuario agregado exitosamente.";
+            header("Location: personal.php?exito=1");
+            exit;
         } else {
-            echo "Error al agregar usuario: " . $conn->error;
+            echo "Error al agregar usuario: ";
+            header("Location: personal.php?error=1");
+            exit;
         }
     }
 }
@@ -108,8 +113,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <div class="mb-3">
                         <label for="tipo_de_usuario" class="form-label">Tipo de Usuario</label>
                         <select class="form-select" id="tipo_de_usuario" name="tipo_de_usuario" required>
-                            <option value="1" <?php echo $tipo_de_usuario == '1' ? 'selected' : ''; ?>>Administrador</option>
-                            <option value="2" <?php echo $tipo_de_usuario == '2' ? 'selected' : ''; ?>>Usuario</option>
+                           
+                            <option value="gerente" <?php echo $tipo_de_usuario == '2' ? 'selected' : ''; ?>>gerente</option>
                         </select>
                     </div>
                     <button type="submit" class="btn btn-primary">Agregar Usuario</button>

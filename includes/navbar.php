@@ -70,9 +70,9 @@ $isLoggedInLvl = isset($_SESSION['nivel']);
                     <a class="nav-link active" href="#"><?php echo $_SESSION["nivel"]; ?></a>
                 </li>
                 <!-- Mostrar el nivel de usuario solo si es nivel 1 -->
-        <?php if ($_SESSION['nivel'] == 1): ?>
+        <?php if ($_SESSION['nivel'] == "administrador"): ?>
             <li class="nav-item">
-                <a class="nav-link active" href="agregarUser.php"></a>
+                <a class="nav-link active" href="personal.php">Gerentes y Personal</a>
             </li>
         <?php endif; ?>
                 <?php endif; ?>
