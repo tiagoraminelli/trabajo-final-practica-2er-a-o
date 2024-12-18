@@ -2,13 +2,6 @@
 
 session_start();
 
-// Verificar si la variable de sesión no está definida o está vacía
-if (!isset($_SESSION['user'])) {
-    // Redirigir al index con el parámetro 'denegado=1'
-    header("Location: index.php?denegado=1");
-    exit; // Es importante salir después de la redirección
-}
-
 // Incluir el archivo de conexión
 require_once 'bd.php'; // Aquí se incluye el archivo de conexión a la base de datos
 
@@ -52,10 +45,13 @@ $rows = $stmt->fetchAll();
 <div class="container mt-5">
     <h2 class="text-center mb-4">Listado de Piezas</h2>
 
-    <!-- Botón para agregar una nueva pieza -->
+   <!-- Botón para agregar una nueva pieza, visible solo si hay sesión activa -->
+   <?php if (isset($_SESSION['user'])): ?>
     <div class="d-flex justify-content-between mb-4">
         <a href="cargarPieza.php" class="btn btn-success btn-add">Agregar Nueva Pieza</a>
     </div>
+    <?php endif; ?>
+
 
     <!-- Tabla con DataTables -->
     <div class="table-responsive">
@@ -86,8 +82,11 @@ $rows = $stmt->fetchAll();
                     <td><?php echo $row['Donante_idDonante']; ?></td>
                     <td>
                         <a href="ver.php?id=<?php echo $row['idPieza']; ?>&clasificacion=<?php echo $row['clasificacion']; ?>" class="btn btn-info btn-sm">Ver</a>
+                        <?php if (isset($_SESSION['user'])): ?>
+                    
                         <a href="editar.php?id=<?php echo $row['idPieza']; ?>&clasificacion=<?php echo $row['clasificacion']; ?>" class="btn btn-warning btn-sm">Editar</a>
                         <a href="eliminar.php?id=<?php echo $row['idPieza']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de eliminar esta entrada?');">Eliminar</a>
+                        <?php endif; ?>
                     </td>
                 </tr>
                 <?php endforeach; ?>

@@ -18,15 +18,14 @@ session_start();
     <?php endif; ?>
     <form method="POST" action="procesar-login.php">
         <div class="mb-3">
-            <label for="email" class="form-label">Correo Electrónico</label>
-            <input type="email" class="form-control" id="email" name="email" required>
+            <label for="text" class="form-label">DNI de Usuario</label>
+            <input type="text" class="form-control" id="dni" name="dni" required>
         </div>
         <div class="mb-3">
             <label for="clave" class="form-label">Contraseña</label>
             <input type="password" class="form-control" id="clave" name="clave" required>
         </div>
         <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
-        <p class="mt-3">¿No tienes una cuenta? <a href="register.php">Regístrate aquí</a></p>
     </form>
 </div>
 

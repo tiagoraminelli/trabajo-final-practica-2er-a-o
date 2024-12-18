@@ -1,5 +1,6 @@
 <?php
 session_start();
+
 require_once "bd.php"; // Asegúrate de que este archivo contiene la conexión a la BD
 
 $breadcrumb = "Detalles";

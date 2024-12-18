@@ -1,5 +1,6 @@
 <?php
 session_start();
+
 // Configuración de la base de datos
 $host = 'localhost'; // Cambia esto si tu base de datos está en otro host
 $db_name = 'practica'; // Nombre de tu base de datos
@@ -19,13 +20,13 @@ try {
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $email = $_POST['email'];
+    $dni = $_POST['dni'];
     $clave = $_POST['clave'];
     var_dump($_POST);
 
 
-    $stmt = $conection->prepare("SELECT * FROM usuario WHERE email = ?");
-    $stmt->execute([$email]);
+    $stmt = $conection->prepare("SELECT * FROM usuario WHERE dni = ?");
+    $stmt->execute([$dni]);
     $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
     var_dump($usuario);
     if(password_verify($clave, $usuario['clave'])){
@@ -37,7 +38,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         header("Location: index.php?bienvenido=1"); // Redirige a la página principal
         exit();
     }
-    if ($usuario and ($clave == $usuario['clave'])){
+    elseif ($usuario and ($clave == $usuario['clave'])){
         echo "usuario entro con exito";
         $_SESSION['user'] = $usuario;
         $_SESSION['id'] = $usuario['idUsuario'];
@@ -47,6 +48,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit();
     } else{
         $error = "Credenciales incorrectas. Inténtalo de nuevo.";
+        header("Location: login.php"); // Redirige a la página principal
     }
 }
 ?>

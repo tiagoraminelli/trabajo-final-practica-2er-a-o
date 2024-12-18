@@ -1,4 +1,11 @@
 <?php
+session_start();
+// Verificar si la variable de sesión no está definida o está vacía
+if (!isset($_SESSION['user'])) {
+    // Redirigir al index con el parámetro 'denegado=1'
+    header("Location: index.php?denegado=1");
+    exit; // Es importante salir después de la redirección
+}
 var_dump($_POST);
 $host = 'localhost'; // Cambia esto si tu base de datos está en otro host
 $db_name = 'practica'; // Nombre de tu base de datos

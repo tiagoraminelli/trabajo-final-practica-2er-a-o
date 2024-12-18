@@ -1,6 +1,12 @@
 <?php
 // Asegúrate de que el usuario esté logueado
 session_start();
+// Verificar si la variable de sesión no está definida o está vacía
+if (!isset($_SESSION['user'])) {
+    // Redirigir al index con el parámetro 'denegado=1'
+    header("Location: index.php?denegado=1");
+    exit; // Es importante salir después de la redirección
+}
 // Conexión a la base de datos (ajusta los datos de conexión según tu configuración)
 $servername = "localhost";
 $username = "root";

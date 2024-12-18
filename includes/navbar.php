@@ -23,6 +23,15 @@ $isLoggedInLvl = isset($_SESSION['nivel']);
                 <li class="nav-item">
                     <a class="nav-link" href="login.php">Login</a>
                 </li>
+                <!-- Menú de Listados -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="listadosDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Listados
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="listadosDropdown">
+                        <li><a class="dropdown-item" href="listados.php">Piezas</a></li>
+                    </ul>
+                </li>
                 <?php endif; ?>
 
                 <!-- Menú de usuario logueado -->
