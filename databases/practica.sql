@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 05-12-2024 a las 20:49:13
+-- Tiempo de generación: 18-12-2024 a las 20:38:54
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -253,7 +253,12 @@ CREATE TABLE `usuario` (
 
 INSERT INTO `usuario` (`idUsuario`, `dni`, `nombre`, `apellido`, `email`, `clave`, `fecha_alta`, `tipo_de_usuario`) VALUES
 (1, '12121212', 'root', 'admin', 'admin@gmail.com', '1234', '2024-11-12', 'administrador'),
-(2, '43766375', 'tiago', 'raminelli', 'tiagoraminelli@gmail.com', '$2y$10$fmRdKsqYvjgTtn./.EwU4OCKla0FrFIblyuPuIxHalDls94AmYvsi', '2024-12-05', 'gerente');
+(2, '43766375', 'tiago', 'raminelli', 'tiagoraminelli@gmail.com', '$2y$10$fmRdKsqYvjgTtn./.EwU4OCKla0FrFIblyuPuIxHalDls94AmYvsi', '2024-12-05', 'gerente'),
+(3, '10000000', 'admin', 'admin', 'admin@gmail.com', '12345678', '2024-12-17', 'administrador'),
+(4, '12341', 'root', 'root', 'root@gmail.com', '$2y$10$xlvjJmuFhYPfCOcEW2kboOYgyXqKHeF9odTplMgfBGC2ph/2aaLz2', NULL, 'gerente'),
+(5, '12341', 'root', 'root', 'root@gmail.com', '$2y$10$mNwF2dIfOe144WSSOzdOdeLWVSOOamdddmxpEPBTst1YdZOfEMBHu', NULL, 'gerente'),
+(6, '1231111', 'root', 'root', 'root@gmail.com', '$2y$10$eiqztby.JmSz5uLzyH./Lu.c2r2zgEECgWnxFtlbErsaPUs7z82PO', '2024-12-17', 'gerente'),
+(7, '12312223', 'root', 'root', 'test@example.us', '$2y$10$SgGvhbySOgaNZm0OB7yHquSQXuVFQJsY9WD6pVAz6C6sI6ejQH55q', '2024-12-17', 'gerente');
 
 -- --------------------------------------------------------
 
@@ -415,7 +420,7 @@ ALTER TABLE `pieza`
 -- AUTO_INCREMENT de la tabla `usuario`
 --
 ALTER TABLE `usuario`
-  MODIFY `idUsuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `idUsuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT de la tabla `zoologia`
