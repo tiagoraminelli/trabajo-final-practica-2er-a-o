@@ -71,7 +71,7 @@ $rows = $stmt->fetchAll();
                     <td><?php echo $row['especie']; ?></td>
                     <td><?php echo $row['Pieza_idPieza']; ?></td>
                     <td>
-                        <a href="verOctologia.php?id=<?php echo $row['idOctologia']; ?>" class="btn btn-info btn-sm">Ver</a>
+
                         <a href="editar.php?id=<?php echo $row['Pieza_idPieza']; ?>&clasificacion=Octología" class="btn btn-warning btn-sm">Editar</a>
                         <a href="eliminar.php?id=<?php echo $row['Pieza_idPieza']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de eliminar esta entrada?');">Eliminar</a>
                     </td>
@@ -96,18 +96,29 @@ $rows = $stmt->fetchAll();
 
 <!-- Activar DataTable -->
 <script>
-    $(document).ready(function() {
-        $('#dataTable').DataTable({
+  $('#dataTable').DataTable({
             "paging": true,
             "searching": true,
             "ordering": true,
             "info": true,
             "lengthMenu": [5, 10, 25, 50],
             "language": {
-                "url": "https://cdn.datatables.net/plug-ins/1.11.3/i18n/Spanish.json"
+                "url": "https://cdn.datatables.net/plug-ins/1.11.3/i18n/Spanish.json",
+                "search": "Buscar:",
+                "lengthMenu": "Mostrar _MENU_ registros por página",
+                "zeroRecords": "No se encontraron registros",
+                "info": "Mostrando página _PAGE_ de _PAGES_",
+                "infoEmpty": "No hay registros disponibles",
+                "infoFiltered": "(filtrado de _MAX_ registros totales)",
+                "paginate": {
+                    "first": "Primera",
+                    "last": "Última",
+                    "next": "Siguiente",
+                    "previous": "Anterior"
+                }
             }
         });
-    });
+
 </script>
 
 </body>

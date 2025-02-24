@@ -8,7 +8,7 @@ if (!isset($_SESSION['user'])) {
     exit; // Es importante salir luego de la redirección
 }
 
-// Verificar si el usuario es administrador (nivel 1)
+// Verificar si el usuario es administrador
 if ($_SESSION['nivel'] != "administrador") {
     header("Location: index.php?denegado=1");
     exit;
@@ -30,26 +30,47 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $clave = $_POST['clave'];
     $tipo_de_usuario = $_POST['tipo_de_usuario'];
 
-    // Validar los datos (puedes agregar más validaciones según lo necesario)
+    // Validar los datos
     if (empty($nombre) || empty($apellido) || empty($email) || empty($dni) || empty($clave) || empty($tipo_de_usuario)) {
         $errores[] = "Todos los campos son requeridos.";
+    }
+
+    // Verificar si el correo o DNI ya existen
+    if (count($errores) == 0) {
+        $sql = "SELECT idUsuario FROM usuario WHERE email = :email OR dni = :dni";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['email' => $email, 'dni' => $dni]);
+        $usuarioExistente = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($usuarioExistente) {
+            $errores[] = "El correo electrónico o DNI ya están registrados.";
+        }
     }
 
     if (count($errores) == 0) {
         // Encriptar la clave
         $clave_encriptada = password_hash($clave, PASSWORD_DEFAULT);
-        $conn = 
 
         // Insertar el nuevo usuario en la base de datos
-        $sql = "INSERT INTO usuario (dni, nombre, apellido, email, clave, tipo_de_usuario,fecha_alta) 
-                VALUES ('$dni', '$nombre', '$apellido', '$email', '$clave_encriptada', '$tipo_de_usuario',NOW())";
+        $sql = "INSERT INTO usuario (dni, nombre, apellido, email, clave, tipo_de_usuario, fecha_alta) 
+                VALUES (:dni, :nombre, :apellido, :email, :clave, :tipo_de_usuario, NOW())";
+        $stmt = $pdo->prepare($sql);
 
-        if ($pdo->query($sql) == TRUE) {
-            echo "Nuevo usuario agregado exitosamente.";
+        try {
+            $stmt->execute([
+                'dni' => $dni,
+                'nombre' => $nombre,
+                'apellido' => $apellido,
+                'email' => $email,
+                'clave' => $clave_encriptada,
+                'tipo_de_usuario' => $tipo_de_usuario
+            ]);
+
+            // Redirigir con mensaje de éxito
             header("Location: personal.php?exito=1");
             exit;
-        } else {
-            echo "Error al agregar usuario: ";
+        } catch (PDOException $e) {
+            // Redirigir con mensaje de error
             header("Location: personal.php?error=1");
             exit;
         }
@@ -65,6 +86,31 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <title>Agregar Usuario</title>
     <!-- Incluir Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <!-- Estilos personalizados -->
+    <style>
+        .card {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .card-title {
+            font-weight: bold;
+            color: #333;
+        }
+        .form-label {
+            font-weight: bold;
+        }
+        .btn-primary {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+        }
+        .alert {
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
 
@@ -72,8 +118,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <?php include("./includes/navbar.php"); ?>
 
     <!-- Contenedor principal -->
-    <div class="container mt-5">
-        <div class="card shadow-lg p-4 bg-white rounded-lg">
+    <div class="container">
+        <div class="card">
             <h2 class="card-title text-center text-primary mb-4">Agregar Nuevo Usuario</h2>
             <div class="card-body">
 
@@ -113,8 +159,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <div class="mb-3">
                         <label for="tipo_de_usuario" class="form-label">Tipo de Usuario</label>
                         <select class="form-select" id="tipo_de_usuario" name="tipo_de_usuario" required>
-                           
-                            <option value="gerente" <?php echo $tipo_de_usuario == '2' ? 'selected' : ''; ?>>gerente</option>
+                            <option value="gerente" <?php echo $tipo_de_usuario == 'gerente' ? 'selected' : ''; ?>>Gerente</option>
                         </select>
                     </div>
                     <button type="submit" class="btn btn-primary">Agregar Usuario</button>

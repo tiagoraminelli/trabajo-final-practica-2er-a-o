@@ -1,16 +1,7 @@
 <?php
 session_start(); // Iniciar la sesión
 
-// Verificar si el usuario está logueado
-// Si el parámetro 'denegado' está presente en la URL, se activa el modal
-if (isset($_GET['denegado']) && $_GET['denegado'] == '1') {
-    echo "<script>
-            window.onload = function() {
-                // Mostrar el modal al cargar la página
-                $('#denegadoModal').modal('show');
-            };
-          </script>";
-}
+
 //var_dump($_SESSION);
 ?>
 

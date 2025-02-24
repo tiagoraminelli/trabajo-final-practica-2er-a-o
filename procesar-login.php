@@ -20,35 +20,43 @@ try {
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $dni = $_POST['dni'];
+    $email = $_POST['email']; // Cambiar de 'dni' a 'email'
     $clave = $_POST['clave'];
     var_dump($_POST);
 
-
-    $stmt = $conection->prepare("SELECT * FROM usuario WHERE dni = ?");
-    $stmt->execute([$dni]);
+    // Consulta SQL para buscar al usuario por su correo electrónico
+    $stmt = $conection->prepare("SELECT * FROM usuario WHERE email = ?");
+    $stmt->execute([$email]);
     $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
     var_dump($usuario);
-    if(password_verify($clave, $usuario['clave'])){
-        echo "usuario entro con exito";
-        $_SESSION['user'] = $usuario;
-        $_SESSION['id'] = $usuario['idUsuario'];
-        $_SESSION['name'] = $usuario['nombre'];
-        $_SESSION['nivel'] = $usuario['tipo_de_usuario'];
-        header("Location: index.php?bienvenido=1"); // Redirige a la página principal
+
+    if ($usuario) {
+        // Verificar la contraseña
+        if (password_verify($clave, $usuario['clave'])) {
+            echo "Usuario entró con éxito";
+            $_SESSION['user'] = $usuario;
+            $_SESSION['id'] = $usuario['idUsuario'];
+            $_SESSION['name'] = $usuario['nombre'];
+            $_SESSION['nivel'] = $usuario['tipo_de_usuario'];
+            header("Location: index.php?bienvenido=1"); // Redirige a la página principal
+            exit();
+        } elseif ($clave == $usuario['clave']) { // Comparación directa (no recomendado para producción)
+            echo "Usuario entró con éxito";
+            $_SESSION['user'] = $usuario;
+            $_SESSION['id'] = $usuario['idUsuario'];
+            $_SESSION['name'] = $usuario['nombre'];
+            $_SESSION['nivel'] = $usuario['tipo_de_usuario'];
+            header("Location: index.php?bienvenido=1"); // Redirige a la página principal
+            exit();
+        } else {
+            $error = "Credenciales incorrectas. Inténtalo de nuevo.";
+            header("Location: login.php?error=1"); // Redirige con un mensaje de error
+            exit();
+        }
+    } else {
+        $error = "Usuario no encontrado. Inténtalo de nuevo.";
+        header("Location: login.php?error=1"); // Redirige con un mensaje de error
         exit();
-    }
-    elseif ($usuario and ($clave == $usuario['clave'])){
-        echo "usuario entro con exito";
-        $_SESSION['user'] = $usuario;
-        $_SESSION['id'] = $usuario['idUsuario'];
-        $_SESSION['name'] = $usuario['nombre'];
-        $_SESSION['nivel'] = $usuario['tipo_de_usuario'];
-        header("Location: index.php?bienvenido=1"); // Redirige a la página principal
-        exit();
-    } else{
-        $error = "Credenciales incorrectas. Inténtalo de nuevo.";
-        header("Location: login.php"); // Redirige a la página principal
     }
 }
 ?>

@@ -91,7 +91,10 @@ $rows = $stmt->fetchAll();
                     <td><?php echo $row['tipo_de_usuario']; ?></td>
                     <td>
                        
-                        <a href="eliminarUser.php?id=<?php echo $row['idUsuario']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de eliminar este usuario?');">Eliminar</a>
+                   
+    <a href="editarUser.php?id=<?php echo $row['idUsuario']; ?>" class="btn btn-warning btn-sm">Editar</a>
+    <a href="eliminarUser.php?id=<?php echo $row['idUsuario']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de eliminar este usuario?');">Eliminar</a>
+
 
                     </td>
                 </tr>
@@ -164,18 +167,28 @@ $rows = $stmt->fetchAll();
 
     </script>
 <script>
-    $(document).ready(function() {
-        $('#dataTable').DataTable({
+     $('#dataTable').DataTable({
             "paging": true,
             "searching": true,
             "ordering": true,
             "info": true,
             "lengthMenu": [5, 10, 25, 50],
             "language": {
-                "url": "https://cdn.datatables.net/plug-ins/1.11.3/i18n/Spanish.json"
+                "url": "https://cdn.datatables.net/plug-ins/1.11.3/i18n/Spanish.json",
+                "search": "Buscar:",
+                "lengthMenu": "Mostrar _MENU_ registros por página",
+                "zeroRecords": "No se encontraron registros",
+                "info": "Mostrando página _PAGE_ de _PAGES_",
+                "infoEmpty": "No hay registros disponibles",
+                "infoFiltered": "(filtrado de _MAX_ registros totales)",
+                "paginate": {
+                    "first": "Primera",
+                    "last": "Última",
+                    "next": "Siguiente",
+                    "previous": "Anterior"
+                }
             }
         });
-    });
 </script>
 </body>
 </html>

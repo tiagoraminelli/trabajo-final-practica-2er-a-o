@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 18-12-2024 a las 20:38:54
+-- Tiempo de generación: 24-02-2025 a las 18:08:23
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -65,7 +65,7 @@ CREATE TABLE `botanica` (
 --
 
 INSERT INTO `botanica` (`idBotanica`, `reino`, `familia`, `especie`, `orden`, `division`, `clase`, `descripcion`, `Pieza_idPieza`) VALUES
-(14, 'root', 'root', 'root', 'root', 'root', 'root', 'root', 36);
+(14, 'root1', 'root1', 'root1', 'root1', 'root1', 'root1', 'root1', 36);
 
 -- --------------------------------------------------------
 
@@ -110,7 +110,12 @@ INSERT INTO `donante` (`idDonante`, `nombre`, `apellido`, `fecha`) VALUES
 (23, 'root', 'root', NULL),
 (24, 'root', 'root', NULL),
 (25, 'root', 'root', NULL),
-(26, 'root', 'root', NULL);
+(26, 'root', 'root', NULL),
+(27, 'tiago', 'Raminelli', NULL),
+(28, 'a', 'a', NULL),
+(29, 'a', 'a', NULL),
+(30, 'a', 'a', NULL),
+(31, 'Tiago', 'Raminelli', NULL);
 
 -- --------------------------------------------------------
 
@@ -124,6 +129,13 @@ CREATE TABLE `geologia` (
   `descripcion` longtext DEFAULT NULL,
   `Pieza_idPieza` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+--
+-- Volcado de datos para la tabla `geologia`
+--
+
+INSERT INTO `geologia` (`idGeologia`, `tipo_rocas`, `descripcion`, `Pieza_idPieza`) VALUES
+(43, 'sedimentarias', 'a', 42);
 
 -- --------------------------------------------------------
 
@@ -139,6 +151,13 @@ CREATE TABLE `ictiologia` (
   `Pieza_idPieza` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
+--
+-- Volcado de datos para la tabla `ictiologia`
+--
+
+INSERT INTO `ictiologia` (`idIctiologia`, `clasificacion`, `especies`, `descripcion`, `Pieza_idPieza`) VALUES
+(11, 'root', 'root', 'a', 40);
+
 -- --------------------------------------------------------
 
 --
@@ -153,6 +172,13 @@ CREATE TABLE `octologia` (
   `descripcion` longtext DEFAULT NULL,
   `Pieza_idPieza` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+--
+-- Volcado de datos para la tabla `octologia`
+--
+
+INSERT INTO `octologia` (`idOctologia`, `clasificacion`, `tipo`, `especie`, `descripcion`, `Pieza_idPieza`) VALUES
+(11, 'a', 'a', 'a', 'a', 41);
 
 -- --------------------------------------------------------
 
@@ -193,7 +219,7 @@ CREATE TABLE `paleontologia` (
 --
 
 INSERT INTO `paleontologia` (`idPaleontologia`, `era`, `periodo`, `descripcion`, `Pieza_idPieza`) VALUES
-(24, 'Mesozoico', 'Ordovícico', 'root', 34);
+(25, 'Paleozoico', 'Cretácico', 'a', 39);
 
 -- --------------------------------------------------------
 
@@ -219,16 +245,15 @@ CREATE TABLE `pieza` (
 --
 
 INSERT INTO `pieza` (`idPieza`, `num_inventario`, `especie`, `estado_conservacion`, `fecha_ingreso`, `cantidad_de_piezas`, `clasificacion`, `observacion`, `imagen`, `Donante_idDonante`) VALUES
-(14, 'INV-002', 'Especie Ejemplo 2', 'Regular', '2024-11-05', '3', 'Osteología', 'Observación 2', 'imagen2.jpg', 1),
-(21, 'INV-009', 'Especie Ejemplo 9', 'Excelente', '2024-11-18', '3', 'Paleontología', 'Observación 9', 'imagen9.jpg', 1),
-(22, 'INV-010', 'Especie Ejemplo 10', 'Mal Estado', '2024-11-20', '2', 'Osteología', 'Observación 10', 'imagen10.jpg', 1),
 (23, 'root', 'root', 'root', '2024-12-08', '1', 'Arqueología', 'root', 'root', 1),
-(24, 'rootAr', 'root', 'root', '2024-12-18', '1', 'Arqueología', 'root', NULL, 12),
-(25, 'rootAr', 'root', 'root', '2024-12-18', '1', 'Arqueología', 'root', NULL, 13),
-(34, 'root', 'root', 'root', '2024-12-09', '1', 'Paleontología', 'root', NULL, 22),
 (35, 'root', 'root', 'root', '2024-12-09', '1', 'Osteología', 'root', NULL, 23),
-(36, 'root', 'root', 'root', '2024-12-09', '1', 'Botánica', 'root', NULL, 24),
-(38, 'root', 'root', 'root', '2024-12-09', '1', 'Arqueología', 'root', NULL, 26);
+(36, 'root', 'root', 'root', '2024-12-09', '1', 'Botánica', 'root', '', 24),
+(38, 'root', 'root', 'root', '2024-12-09', '1', 'Arqueología', 'root', NULL, 26),
+(39, 'root', 'root', '1', '2025-01-26', '1', 'Paleontología', 'a', NULL, 27),
+(40, 'a', 'a', 'a', '2025-02-10', '1', 'Ictiología', 'asda', NULL, 28),
+(41, 'a', 'a', 'a', '2025-02-16', '1', 'Octología', 'a', NULL, 29),
+(42, 'a', 'a', 'a', '2025-02-02', '1', 'Geología', 'a', NULL, 30),
+(43, 'a', 'a', 'a', '2025-02-25', '1', 'Zoología', 'a', NULL, 31);
 
 -- --------------------------------------------------------
 
@@ -253,12 +278,9 @@ CREATE TABLE `usuario` (
 
 INSERT INTO `usuario` (`idUsuario`, `dni`, `nombre`, `apellido`, `email`, `clave`, `fecha_alta`, `tipo_de_usuario`) VALUES
 (1, '12121212', 'root', 'admin', 'admin@gmail.com', '1234', '2024-11-12', 'administrador'),
-(2, '43766375', 'tiago', 'raminelli', 'tiagoraminelli@gmail.com', '$2y$10$fmRdKsqYvjgTtn./.EwU4OCKla0FrFIblyuPuIxHalDls94AmYvsi', '2024-12-05', 'gerente'),
-(3, '10000000', 'admin', 'admin', 'admin@gmail.com', '12345678', '2024-12-17', 'administrador'),
-(4, '12341', 'root', 'root', 'root@gmail.com', '$2y$10$xlvjJmuFhYPfCOcEW2kboOYgyXqKHeF9odTplMgfBGC2ph/2aaLz2', NULL, 'gerente'),
-(5, '12341', 'root', 'root', 'root@gmail.com', '$2y$10$mNwF2dIfOe144WSSOzdOdeLWVSOOamdddmxpEPBTst1YdZOfEMBHu', NULL, 'gerente'),
-(6, '1231111', 'root', 'root', 'root@gmail.com', '$2y$10$eiqztby.JmSz5uLzyH./Lu.c2r2zgEECgWnxFtlbErsaPUs7z82PO', '2024-12-17', 'gerente'),
-(7, '12312223', 'root', 'root', 'test@example.us', '$2y$10$SgGvhbySOgaNZm0OB7yHquSQXuVFQJsY9WD6pVAz6C6sI6ejQH55q', '2024-12-17', 'gerente');
+(2, '43766375', 'tiagoaa', 'raminelliaaa', 'tiagoramiaaanelli@gmail.com', '$2y$10$fmRdKsqYvjgTtn./.EwU4OCKla0FrFIblyuPuIxHalDls94AmYvsi', '2024-12-05', 'gerente'),
+(10, '1222211', 'root', 'all', 'obligame@gmail.com', '$2y$10$gc11TM1j5VhMnZMIqCcG7uta/M1UIU.BWZUE2W7QMZh/3VMFHx1CW', '2025-02-24', 'gerente'),
+(11, '22222222', 'gerente', 'gerente', 'gerente@gmail.com', 'gerente', '2025-02-03', 'gerente');
 
 -- --------------------------------------------------------
 
@@ -278,6 +300,13 @@ CREATE TABLE `zoologia` (
   `descripcion` longtext DEFAULT NULL,
   `Pieza_idPieza` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+--
+-- Volcado de datos para la tabla `zoologia`
+--
+
+INSERT INTO `zoologia` (`idZoologia`, `reino`, `familia`, `especie`, `orden`, `phylum`, `clase`, `genero`, `descripcion`, `Pieza_idPieza`) VALUES
+(4, 'tiago', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 43);
 
 --
 -- Índices para tablas volcadas
@@ -378,25 +407,25 @@ ALTER TABLE `botanica`
 -- AUTO_INCREMENT de la tabla `donante`
 --
 ALTER TABLE `donante`
-  MODIFY `idDonante` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `idDonante` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- AUTO_INCREMENT de la tabla `geologia`
 --
 ALTER TABLE `geologia`
-  MODIFY `idGeologia` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
+  MODIFY `idGeologia` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
 
 --
 -- AUTO_INCREMENT de la tabla `ictiologia`
 --
 ALTER TABLE `ictiologia`
-  MODIFY `idIctiologia` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `idIctiologia` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT de la tabla `octologia`
 --
 ALTER TABLE `octologia`
-  MODIFY `idOctologia` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `idOctologia` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT de la tabla `osteologia`
@@ -408,25 +437,25 @@ ALTER TABLE `osteologia`
 -- AUTO_INCREMENT de la tabla `paleontologia`
 --
 ALTER TABLE `paleontologia`
-  MODIFY `idPaleontologia` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `idPaleontologia` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT de la tabla `pieza`
 --
 ALTER TABLE `pieza`
-  MODIFY `idPieza` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
+  MODIFY `idPieza` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
 
 --
 -- AUTO_INCREMENT de la tabla `usuario`
 --
 ALTER TABLE `usuario`
-  MODIFY `idUsuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `idUsuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT de la tabla `zoologia`
 --
 ALTER TABLE `zoologia`
-  MODIFY `idZoologia` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `idZoologia` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- Restricciones para tablas volcadas
