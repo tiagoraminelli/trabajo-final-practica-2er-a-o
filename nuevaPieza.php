@@ -54,10 +54,14 @@ if ($donante_nombre && $donante_apellido) {
     $donante_idDonante = $conection->lastInsertId(); // Obtener el ID del donante recién insertado
 }
 
-// Insertar la pieza en la tabla 'pieza'
+// Insertar la pieza en la tabla 'pieza' con un marcador temporal para num_inventario
 $sql = "INSERT INTO pieza (num_inventario, especie, estado_conservacion, fecha_ingreso, cantidad_de_piezas, clasificacion, observacion, imagen, Donante_idDonante) 
         VALUES (:num_inventario, :especie, :estado_conservacion, :fecha_ingreso, :cantidad_de_piezas, :clasificacion, :observacion, :imagen, :donante_idDonante)";
 $stmt = $conection->prepare($sql);
+
+// Usamos un valor temporal en num_inventario
+$num_inventario = "TEMP"; 
+
 $stmt->bindParam(':num_inventario', $num_inventario);
 $stmt->bindParam(':especie', $especie);
 $stmt->bindParam(':estado_conservacion', $estado_conservacion);
@@ -73,6 +77,16 @@ $stmt->execute();
 
 // Obtener el ID de la pieza recién insertada
 $idPieza = $conection->lastInsertId();
+
+// Actualizar el num_inventario concatenando el ID
+$num_inventario_final = "INV-" . $idPieza;
+
+$sql_update = "UPDATE pieza SET num_inventario = :num_inventario WHERE idPieza = :idPieza";
+$stmt_update = $conection->prepare($sql_update);
+$stmt_update->bindParam(':num_inventario', $num_inventario_final);
+$stmt_update->bindParam(':idPieza', $idPieza);
+$stmt_update->execute();
+
 
 // Asegúrate de que $idPieza no sea null
 if (!$idPieza) {
