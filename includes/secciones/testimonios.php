@@ -17,7 +17,7 @@
         <!-- Testimonio 3 -->
         <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
             <img class="w-32 h-32 rounded-full mx-auto mb-4" src="./assets/img/personal2.jpg" alt="Testimonio 3">
-            <h3 class="text-xl font-semibold text-primary-custom text-center mb-2">Laura Sánchez,</h3>
+            <h3 class="text-xl font-semibold text-primary-custom text-center mb-2">Laura Sánchez</h3>
             <p class="text-gray-600 text-center">"Formar parte de este museo ha sido increíble. Ayudar en la conservación de las piezas y en las actividades para el público me hace sentir que contribuyo a preservar nuestra cultura para las futuras generaciones."</p>
         </div>
     </div>
