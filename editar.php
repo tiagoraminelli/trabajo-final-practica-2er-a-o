@@ -9,6 +9,16 @@ if (!isset($_SESSION['user'])) {
     exit; // Es importante salir después de la redirección
 }
 
+// Verificar si hay errores en la sesión
+
+$errores = [];
+if (isset($_SESSION['errores'])) {
+    // Asegurarse de que $errores sea un array
+    $errores = (array)$_SESSION['errores'];
+    // Limpiar los errores después de obtenerlos
+    unset($_SESSION['errores']);
+}
+
 // Obtener los datos de la pieza
 if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     $idPieza = isset($_GET['id']) ? intval($_GET['id']) : 0;
@@ -46,6 +56,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         $stmtClasificacion->execute([$idPieza]);
         $clasificacionDetalles = $stmtClasificacion->fetch(PDO::FETCH_ASSOC);
 
+        $_SESSION['idPieza'] = $idPieza;
+        $_SESSION['clasificacion'] = $clasificacion;
+
         if (empty($pieza) || empty($clasificacionDetalles)) {
             echo "No se encontraron resultados para la pieza con ID: $idPieza";
             exit;
@@ -70,6 +83,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 <div class="container mt-5">
     <h2 class="mb-4">Editar Pieza - <?php echo htmlspecialchars($pieza['num_inventario']); ?></h2>
     
+ <!-- Mostrar errores si existen -->
+ <?php if (!empty($errores)): ?>
+        <div class="alert alert-danger">
+            <ul>
+                <?php foreach ($errores as $error): ?>
+                    <li><?php echo htmlspecialchars($error); ?></li>
+                <?php endforeach; ?>
+            </ul>
+        </div>
+    <?php endif; ?>
+
     <!-- Formulario genérico para la pieza -->
     <form action="guardar_pieza.php" method="POST" enctype="multipart/form-data">
         <input type="hidden" name="idPieza" value="<?php echo htmlspecialchars($pieza['idPieza']); ?>">
@@ -114,11 +138,35 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
             <input class="form-control" id="clasificacion" name="clasificacion" value="<?php echo htmlspecialchars($pieza['clasificacion']); ?>" readonly>
         </div>
 
-        <div class="mb-3">
-            <label for="imagen" class="form-label">Imagen</label>
-            <input type="file" class="form-control" id="imagen" name="imagen" accept="image/*">
+<!-------------- Mostrar la imagen si existe -------->   
+<!-- Campo oculto para almacenar la imagen actual -->
+<input type="hidden" name="imagen_actual" value="<?php echo htmlspecialchars($pieza['imagen']); ?>">
+<div class="mb-3">
+    <label for="imagen" class="form-label">Imagen actual</label>
+    <?php if (!empty($pieza['imagen'])): ?>
+        <!-- Mostrar la imagen si existe -->
+        <div>
+            <img src="uploads/<?php echo htmlspecialchars($pieza['imagen']); ?>" alt="Imagen de la pieza" style="max-width: 200px; height: auto;">
+            <!-- Opción para eliminar la imagen actual -->
+            <div class="form-check mt-2">
+                <input type="checkbox" class="form-check-input" id="eliminar_imagen" name="eliminar_imagen">
+                <label class="form-check-label" for="eliminar_imagen">Eliminar imagen actual</label>
+            </div>
         </div>
-        
+    <?php else: ?>
+        <!-- Mostrar un mensaje si no hay imagen -->
+        <div>
+            <p>No hay imagen cargada.</p>
+        </div>
+    <?php endif; ?>
+</div>
+
+<div class="mb-3">
+    <label for="imagen" class="form-label">Cambiar imagen</label>
+    <input type="file" class="form-control" id="imagen" name="imagen" accept="image/*">
+</div>
+<!-------------- Mostrar la imagen si existe -------->   
+
         <hr>
          <!-- Formulario específico según la clasificación -->
 <?php if ($clasificacion == 'Arqueología'): ?>

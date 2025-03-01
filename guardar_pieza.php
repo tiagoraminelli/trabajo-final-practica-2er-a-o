@@ -11,6 +11,8 @@ if (!isset($_SESSION['user'])) {
 
 // Verificar si se ha enviado el formulario
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // Array para almacenar errores
+    $errores = [];
     // Obtener los datos enviados por el formulario
     $idPieza = isset($_POST['idPieza']) ? intval($_POST['idPieza']) : 0;
     $num_inventario = isset($_POST['num_inventario']) ? $_POST['num_inventario'] : '';
@@ -22,19 +24,81 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $donante_idDonante = isset($_POST['donante_idDonante']) ? $_POST['donante_idDonante'] : 0;
     $clasificacion = isset($_POST['clasificacion']) ? $_POST['clasificacion'] : '';
     $imagen = isset($_FILES['imagen']) ? $_FILES['imagen'] : null;
+    $imagen_actual = isset($_POST['imagen_actual']) ? $_POST['imagen_actual'] : '';
+    $eliminar_imagen = isset($_POST['eliminar_imagen']) ? true : false;
 
-    // Verificar si la imagen fue cargada
-    if ($imagen && $imagen['error'] == UPLOAD_ERR_OK) {
-        // Generar un nombre único para la imagen
+
+
+    // Verificar si el número de inventario ya existe en otra pieza
+    $sqlVerificar = "SELECT idPieza FROM pieza WHERE num_inventario = ? AND idPieza != ?";
+    $stmtVerificar = $pdo->prepare($sqlVerificar);
+    $stmtVerificar->execute([$num_inventario, $idPieza]);
+
+// Verificar si el donante existe
+$sqlVerificarDonante = "SELECT idDonante FROM donante WHERE idDonante = ?";
+$stmtVerificarDonante = $pdo->prepare($sqlVerificarDonante);
+$stmtVerificarDonante->execute([$donante_idDonante]);
+
+
+if ($stmtVerificarDonante->rowCount() == 0) {
+    // Si el donante no existe, agregar un error
+    $errores[] = "El donante seleccionado no existe.";
+}
+
+    // Validar que la cantidad de piezas sea un número
+    if (!is_numeric($cantidad_de_piezas)) {
+        $errores[] = "La cantidad de piezas debe ser un número.";
+    }
+
+    if ($stmtVerificar->rowCount() > 0) {
+        // Si el número de inventario ya existe, lanzar un error
+        $errores[] = "El número de inventario ya está en uso.";    
+    }
+
+    
+// Manejo de la imagen
+    if ($eliminar_imagen) {
+        // Eliminar la imagen actual del servidor
+        if (!empty($imagen_actual) && file_exists("uploads/" . $imagen_actual)) {
+            unlink("uploads/" . $imagen_actual);
+        }
+        $imagenNombre = ''; // Establecer el campo de imagen como vacío
+    } elseif ($imagen && $imagen['error'] == UPLOAD_ERR_OK && empty($errores)) {
+        // Cargar una nueva imagen
         $imagenNombre = time() . "_" . basename($imagen['name']);
         $destinoImagen = "uploads/" . $imagenNombre;
-
-        // Mover la imagen al directorio de destino
         move_uploaded_file($imagen['tmp_name'], $destinoImagen);
     } else {
-        // Si no se cargó una nueva imagen, mantener la imagen anterior
-        $imagenNombre = isset($_POST['imagen_actual']) ? $_POST['imagen_actual'] : '';
+        // Mantener la imagen actual
+        $imagenNombre = $imagen_actual;
     }
+
+
+if ($imagen && $imagen['error'] == UPLOAD_ERR_OK) {
+    // Validar el tipo de archivo
+    $extensionesPermitidas = ['jpg', 'jpeg', 'png', 'webp'];
+    $extension = strtolower(pathinfo($imagen['name'], PATHINFO_EXTENSION));
+    if (!in_array($extension, $extensionesPermitidas)) {
+        $errores[] = "Solo se permiten archivos JPG, JPEG, PNG o WEBP.";
+    }
+
+    // Validar el tamaño del archivo (ejemplo: máximo 2MB)
+    if ($imagen['size'] > 2 * 1024 * 1024) {
+        $errores[] = "El archivo no puede ser mayor a 2MB.";
+    }
+}
+// fin del Manejo de la imagen
+
+    // Si hay errores, guardarlos en la sesión y redirigir
+    if (!empty($errores)) {
+        $_SESSION['errores'] = $errores;
+    //var_dump($_SESSION['idPieza']) ;
+    //var_dump($_SESSION['clasificacion']);
+        header("Location: editar.php?id=" . $_SESSION['idPieza'] . "&clasificacion=" . $_SESSION['clasificacion'] . "&errores=1");
+        exit;
+    }
+
+
 
     // Actualizar los datos de la pieza
     $sqlPieza = "UPDATE pieza SET 
