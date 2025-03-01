@@ -31,9 +31,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         $tablaRelacionada = $clasificacionTablaMap[$clasificacion];
 
         // Construir la consulta SQL para obtener solo los datos de la tabla relacionada
-        $sql = "SELECT * 
-                FROM $tablaRelacionada
-                WHERE Pieza_idPieza = ?";
+        $sql = "SELECT p.imagen, r.* 
+        FROM $tablaRelacionada r
+        INNER JOIN pieza p ON r.Pieza_idPieza = p.idPieza
+        WHERE r.Pieza_idPieza = ?";
 
         // Preparar la consulta
         $stmt = $pdo->prepare($sql);
@@ -68,7 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../public/css/pieza.css">
     <style>
-        /* Personaliza aquí los colores y estilos según sea necesario */
+        /* Estilos personalizados */
         body {
             background-color: #f8f9fa;
         }
@@ -83,6 +84,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
             background-color: #ffffff;
             color: #212529;
         }
+        .img-frame {
+            border: 5px solid #ddd; /* Borde para el marco */
+            padding: 10px; /* Espacio interno */
+            background-color: #fff; /* Fondo blanco */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra */
+            max-width: 300px; /* Ancho máximo */
+            margin: 0 auto; /* Centrar horizontalmente */
+        }
+        .img-frame img {
+            width: 100%; /* Ajustar imagen al contenedor */
+            height: auto; /* Mantener proporción */
+        }
+        .img-name {
+            text-align: center; /* Centrar texto */
+            margin-top: 10px; /* Espacio superior */
+            font-size: 16px; /* Tamaño de fuente */
+            font-weight: bold; /* Negrita */
+            color: #333; /* Color del texto */
+        }
     </style>
 </head>
 <body>
@@ -90,6 +110,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 <div class="container my-5">
     <?php
     if (!empty($resultados)) {
+        // Obtener la imagen y su nombre
+        $imagen = $resultados[0]['imagen']; // Ruta de la imagen
+        $nombreImagen = basename($imagen); // Nombre del archivo de la imagen
+
+        // Mostrar la imagen enmarcada con su nombre
+        if (!empty($imagen)) {
+            echo "<div class='text-center mb-4'>";
+            echo "<div class='img-frame'>";
+            echo "<img src='uploads/" . htmlspecialchars($imagen) . "' alt='Imagen de la pieza'>";
+            echo "<div class='img-name'>" . htmlspecialchars($nombreImagen) . "</div>";
+            echo "</div>";
+            echo "</div>";
+        }
+
         // Mostrar una tabla con los detalles de la tabla relacionada (Arqueología, Osteología, etc.)
         echo "<h4 class='mt-4 text-center text-xl font-semibold text-gray-800'>Detalles de la Clasificación: " . ucfirst($clasificacion) . "</h4>";
         echo "<table class='table table-striped table-hover my-4'>";
@@ -97,7 +131,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 
         // Mostrar encabezados de la tabla de la clasificación relacionada
         foreach ($resultados[0] as $campo => $valor) {
-            echo "<th>" . ucfirst(str_replace('_', ' ', $campo)) . "</th>";
+            if ($campo !== 'imagen') { // Excluir la columna 'imagen' de la tabla
+                echo "<th>" . ucfirst(str_replace('_', ' ', $campo)) . "</th>";
+            }
         }
 
         echo "</tr></thead><tbody>";
@@ -106,7 +142,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         foreach ($resultados as $fila) {
             echo "<tr>";
             foreach ($fila as $campo => $valor) {
-                echo "<td>" . htmlspecialchars($valor) . "</td>";
+                if ($campo !== 'imagen') { // Excluir la columna 'imagen' de la tabla
+                    echo "<td>" . htmlspecialchars($valor) . "</td>";
+                }
             }
             echo "</tr>";
         }
