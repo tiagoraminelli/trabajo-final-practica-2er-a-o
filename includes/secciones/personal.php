@@ -1,7 +1,7 @@
 <!-- Sección de Nuestro Personal -->
 <div class="container mx-auto my-12 px-4">
     <h2 class="text-3xl font-bold text-center text-primary-custom mb-8">Conoce a Nuestro Equipo</h2>
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
         <!-- Miembro 1 -->
         <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
             <img class="w-32 h-32 rounded-full mx-auto mb-4" src="./assets/img/empleada.png" alt="Foto del miembro 1">

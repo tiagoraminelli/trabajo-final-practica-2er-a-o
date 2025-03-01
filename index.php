@@ -13,6 +13,7 @@ session_start(); // Iniciar la sesión
     <!-- Incluye Tailwind CSS -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@1.9.6/dist/tailwind.min.css" rel="stylesheet">
     <!-- Estilos personalizados -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
     <style>
         /* Carrusel */
         .carousel-inner img {
@@ -88,12 +89,14 @@ session_start(); // Iniciar la sesión
 <?php include("./includes/secciones/horarios.php"); ?>
 
 <!-- Sección de Nuestro Personal -->
+<div id="nosotros"></div>
 <?php include("./includes/secciones/personal.php"); ?>
 
 <!-- Sección de Imagen Grande con Texto -->
 <?php include("./includes/secciones/mural.php"); ?>
 
 <!-- Sección de Eventos -->
+<div id="servicios"></div>
 <?php include("./includes/secciones/eventos.php"); ?>
 
 <!-- Sección de Testimonios -->
@@ -103,6 +106,7 @@ session_start(); // Iniciar la sesión
 <?php include("./includes/secciones/como_llegar.php"); ?>
 
 <!-- Pie de Página -->
+<div id="contacto"></div>
 <?php include("./includes/footer.php"); ?>
 
 <!-- Bootstrap JS -->
