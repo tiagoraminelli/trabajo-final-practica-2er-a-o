@@ -47,7 +47,7 @@ $breadcrumb = "Formulario para agregar nuevas pieza"
         <div class="row">
             <div class="col-md-6 mb-3">
                 <label for="cantidad_de_piezas" class="form-label">Cantidad de Piezas</label>
-                <input type="text" class="form-control" id="cantidad_de_piezas" name="cantidad_de_piezas" required>
+                <input type="number" class="form-control" id="cantidad_de_piezas" name="cantidad_de_piezas" required>
             </div>
             <div class="col-md-6 mb-3">
                 <label for="clasificacion" class="form-label">Clasificación</label>

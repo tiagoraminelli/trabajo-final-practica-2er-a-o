@@ -31,12 +31,14 @@ $fecha_ingreso = $_POST['fecha_ingreso'];
 $cantidad_de_piezas = $_POST['cantidad_de_piezas'];
 $clasificacion = $_POST['clasificacion'];
 $observacion = $_POST['observacion'];
+$imagen = isset($_FILES['imagen']) ? $_FILES['imagen'] : null;
+$imagenNombre = ''; // Establecer el campo de imagen como vacío
 
-// Subir la imagen si existe
-$imagen = null;
 if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
-    $imagen = 'images/' . basename($_FILES['imagen']['name']);
-    move_uploaded_file($_FILES['imagen']['tmp_name'], $imagen);  // Guardar la imagen en el servidor
+    // Cargar una nueva imagen
+    $imagenNombre = time() . "_" . basename($imagen['name']);
+    $destinoImagen = "uploads/" . $imagenNombre;
+    move_uploaded_file($imagen['tmp_name'], $destinoImagen);
 }
 
 // Datos del donante (opcional)
@@ -69,7 +71,7 @@ $stmt->bindParam(':fecha_ingreso', $fecha_ingreso);
 $stmt->bindParam(':cantidad_de_piezas', $cantidad_de_piezas);
 $stmt->bindParam(':clasificacion', $clasificacion);
 $stmt->bindParam(':observacion', $observacion);
-$stmt->bindParam(':imagen', $imagen);
+$stmt->bindParam(':imagen', $imagenNombre);
 $stmt->bindParam(':donante_idDonante', $donante_idDonante);
 
 // Ejecutar la inserción de la pieza
