@@ -42,6 +42,19 @@ if (!empty($password) && strlen($password) < 3) {
     $errores[] = "La contraseña debe tener al menos 3 caracteres.";
 }
 
+// Validar el formato del correo electrónico
+if (strlen($email) <= 11 || !filter_var($email, FILTER_VALIDATE_EMAIL) ) {
+    $errores[] = "El correo electrónico no tiene un formato válido.";
+}
+// Validar que el dominio del correo electrónico exista
+else {
+    $dominio = substr(strrchr($email, "@"), 1); // Extraer el dominio del correo
+    if (!checkdnsrr($dominio, "MX")) { // Verificar si el dominio tiene registros MX
+        $errores[] = "El dominio del correo electrónico no es válido o no existe.";
+    }
+}
+
+
 // Verificar si el correo o DNI ya existen
 if (count($errores) == 0) {
     $sql = "SELECT idUsuario FROM usuario WHERE (email = :email OR dni = :dni) AND idUsuario != :idUsuario";
