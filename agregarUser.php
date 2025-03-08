@@ -35,6 +35,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $errores[] = "Todos los campos son requeridos.";
     }
 
+    if($dni != 8 || !ctype_digit($dni)) {
+        $errores[] = "El DNI debe tener 8 dígitos numéricos.";
+    }
+
     // Verificar si el correo o DNI ya existen
     if (count($errores) == 0) {
         $sql = "SELECT idUsuario FROM usuario WHERE email = :email OR dni = :dni";

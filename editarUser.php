@@ -10,11 +10,10 @@ if (!isset($_SESSION['user']) || $_SESSION['nivel'] != "administrador") {
 // Incluir el archivo de conexión
 require_once 'bd.php';
 
-
 $idUsuario = $_GET['id'];
 
 // Obtener los datos del usuario a editar
-$sql = "SELECT idUsuario, dni, nombre, apellido, email, fecha_alta, tipo_de_usuario FROM usuario WHERE idUsuario = :idUsuario";
+$sql = "SELECT idUsuario, dni, nombre, apellido, email, fecha_alta, tipo_de_usuario, clave FROM usuario WHERE idUsuario = :idUsuario";
 $stmt = $pdo->prepare($sql);
 $stmt->execute(['idUsuario' => $idUsuario]);
 $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -24,34 +23,11 @@ if (!$usuario) {
     exit;
 }
 
-// Procesar el formulario de edición
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $dni = $_POST['dni'];
-    $nombre = $_POST['nombre'];
-    $apellido = $_POST['apellido'];
-    $email = $_POST['email'];
-    $tipo_de_usuario = $_POST['tipo_de_usuario'];
-
-    // Validar los datos (puedes agregar más validaciones según sea necesario)
-    if (empty($dni) || empty($nombre) || empty($apellido) || empty($email) || empty($tipo_de_usuario)) {
-        $error = "Todos los campos son obligatorios.";
-    } else {
-        // Actualizar el usuario en la base de datos
-        $sql = "UPDATE usuario SET dni = :dni, nombre = :nombre, apellido = :apellido, email = :email, tipo_de_usuario = :tipo_de_usuario WHERE idUsuario = :idUsuario";
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute([
-            'dni' => $dni,
-            'nombre' => $nombre,
-            'apellido' => $apellido,
-            'email' => $email,
-            'tipo_de_usuario' => $tipo_de_usuario,
-            'idUsuario' => $idUsuario
-        ]);
-
-        // Redirigir al listado con un mensaje de éxito
-        header("Location: listadoUsuarios.php?exito=1");
-        exit;
-    }
+// Mostrar errores si existen
+$errores = [];
+if (isset($_SESSION['errores'])) {
+    $errores = $_SESSION['errores'];
+    unset($_SESSION['errores']); // Limpiar los errores después de mostrarlos
 }
 ?>
 
@@ -70,12 +46,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <div class="container mt-5">
     <h2 class="text-center mb-4">Editar Usuario</h2>
 
-    <?php if (isset($error)): ?>
-        <div class="alert alert-danger"><?php echo $error; ?></div>
+    <?php if (!empty($errores)): ?>
+        <div class="alert alert-danger">
+            <ul>
+                <?php foreach ($errores as $error): ?>
+                    <li><?php echo $error; ?></li>
+                <?php endforeach; ?>
+            </ul>
+        </div>
     <?php endif; ?>
 
     <form method="POST" action="funcionEditarUser.php">
-    <input type="hidden" name="idUsuario" value="<?php echo $usuario['idUsuario']; ?>">
+        <input type="hidden" name="idUsuario" value="<?php echo $usuario['idUsuario']; ?>">
         <div class="mb-3">
             <label for="dni" class="form-label">DNI</label>
             <input type="text" class="form-control" id="dni" name="dni" value="<?php echo $usuario['dni']; ?>" required>
@@ -93,9 +75,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <input type="email" class="form-control" id="email" name="email" value="<?php echo $usuario['email']; ?>" required>
         </div>
         <div class="mb-3">
+            <label for="password" class="form-label">Nueva Contraseña (opcional)</label>
+            <input type="password" class="form-control" id="password" name="password">
+            <small class="text-muted">Deja este campo vacío si no deseas cambiar la contraseña.</small>
+        </div>
+        <div class="mb-3">
             <label for="tipo_de_usuario" class="form-label">Tipo de Usuario</label>
             <select class="form-select" id="tipo_de_usuario" name="tipo_de_usuario" required>
                 <option value="gerente" <?php echo ($usuario['tipo_de_usuario'] == 'gerente') ? 'selected' : ''; ?>>Gerente</option>
+                <!-- Agrega más opciones según sea necesario -->
             </select>
         </div>
         <button type="submit" class="btn btn-primary">Guardar Cambios</button>
