@@ -35,12 +35,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $errores[] = "Todos los campos son requeridos.";
     }
 
-    if($dni != 8 || !ctype_digit($dni)) {
-        $errores[] = "El DNI debe tener 8 dígitos numéricos.";
+    // Validar DNI
+    if (strlen($dni) != 8 || !ctype_digit($dni)) {
+        $errores[] = "El DNI debe tener 8 dígitos numéricos.";
+    }
+
+    // Validar nombres y apellidos
+    if (strlen($nombre) < 3 || !preg_match('/^[a-zA-Z\s]+$/', $nombre) || substr_count($nombre, ' ') > 2) {
+        $errores[] = "El nombre debe tener al menos 3 caracteres, solo puede contener letras y espacios, y no más de 2 espacios en blanco.";
+    }
+
+    if (strlen($apellido) < 3 || !preg_match('/^[a-zA-Z\s]+$/', $apellido) || substr_count($apellido, ' ') > 2) {
+        $errores[] = "El apellido debe tener al menos 3 caracteres, solo puede contener letras y espacios, y no más de 2 espacios en blanco.";
+    }
+
+    // Validar contraseña
+    if (strlen($clave) < 3) {
+        $errores[] = "La contraseña debe tener al menos 3 caracteres.";
     }
 
     // Verificar si el correo o DNI ya existen
-    if (count($errores) == 0) {
+    if ($email || $dni) {
         $sql = "SELECT idUsuario FROM usuario WHERE email = :email OR dni = :dni";
         $stmt = $pdo->prepare($sql);
         $stmt->execute(['email' => $email, 'dni' => $dni]);
@@ -164,6 +179,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <label for="tipo_de_usuario" class="form-label">Tipo de Usuario</label>
                         <select class="form-select" id="tipo_de_usuario" name="tipo_de_usuario" required>
                             <option value="gerente" <?php echo $tipo_de_usuario == 'gerente' ? 'selected' : ''; ?>>Gerente</option>
+                            <option value="administrador" <?php echo $tipo_de_usuario == 'administrador' ? 'selected' : ''; ?>>Administrador</option>
                         </select>
                     </div>
                     <button type="submit" class="btn btn-primary">Agregar Usuario</button>
